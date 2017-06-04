@@ -1,0 +1,205 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "css/map_view.css" %}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="w3-container" style="padding:45px 16px" id="home">
+    </div>
+
+    <div class="w3-container" id="map" style="height: calc(100% - 95px);">
+    </div>
+
+    <div class="w3-col m3" style="position: fixed;top:calc(12%);border-radius: 5px;">
+        <div class="w3-margin-bottom w3-white w3-hide-small" style="border-radius: 5px;">
+            <div class="w3-card-2" style="padding-bottom: 10px;">
+                <img src="{% static "img/bg1.jpg" %}" style="width:100%">
+                <div class="w3-container" id="map_deatil">
+                    <h4>淡水超好吃小吃
+                        <small style="color: #999">(22)</small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>我的淡水私房美食！</p>
+                    <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                        <li class="w3-padding-10 detail-item" onclick="detail_click()"><b>5星</b> 蔥油餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 石頭餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤鳥蛋</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 超好吃超貴咖哩</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 可麗餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 一口煎餃</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 印度料理</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤魷魚</li>
+                    </ul>
+                </div>
+                <div class="w3-container" id="food_deatil" style="display: none;">
+                    <p>
+                        <button onclick="detail_click()" class="w3-button w3-light-grey w3-block"><i
+                                class="fa fa-reply"></i> 淡水超好吃小吃
+                        </button>
+                    </p>
+                    <h4>斜坡淡水阿給</h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>超級推薦這間的阿給，好吃！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div id="detail" class="w3-container w3-hide-ipad" style="padding-top:10px;">
+        <div class="w3-margin-bottom w3-white w3-hide-large" style="border-radius: 5px;">
+            <div class="w3-card-2" style="padding-bottom: 10px;">
+                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
+                <div class="w3-container" id="map_deatil2">
+                    <h4>淡水超好吃小吃
+                        <small style="color: #999">(22)</small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>我的淡水私房美食！</p>
+                    <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                        <li class="w3-padding-10 detail-item" onclick="detail_click2()"><b>5星</b> 蔥油餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 石頭餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤鳥蛋</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 超好吃超貴咖哩</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 可麗餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 一口煎餃</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 印度料理</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤魷魚</li>
+                    </ul>
+                </div>
+                <div class="w3-container" id="food_deatil2" style="display: none;">
+                    <p>
+                        <button onclick="detail_click2()" class="w3-button w3-light-grey w3-block"><i
+                                class="fa fa-reply"></i> 淡水超好吃小吃
+                        </button>
+                    </p>
+                    <h4>斜坡淡水阿給
+                        <small><a href="#home" class="w3-button" style="color: #666;"><i class="fa fa-map-o"></i> 地圖</a>
+                        </small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>超級推薦這間的阿給，好吃！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "plugins/gmaps.js" %}"></script>
+    <script>
+        var map;
+        var marks = [];
+        $(document).ready(function () {
+            map = new GMaps({
+                div: '#map',
+                lat: 25.169712,
+                lng: 121.440934,
+                zoom: 16,
+                zoomControl: true,
+                zoomControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_TOP
+                },
+                panControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                overviewMapControl: false,
+                mapTypeId: 'roadmap',
+                click: function (e) {
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    console.log(e);
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: '<p>HTML Content</p>'
+                    });
+                    mark = map.addMarker({
+                        lat: e.latLng.lat(),
+                        lng: e.latLng.lng(),
+                        title: 'Lima',
+                        infoWindow: infoWindow,
+                    })
+                    marks[marks.length] = mark;
+                    //setTimeout(function(){mark.setAnimation(null)}, 200);
+                    console.log(mark);
+                    infoWindow.open(map, mark);
+
+
+                    GMaps.geocode({
+                        address: e.latLng.lat() + "," + e.latLng.lng(),
+                        callback: function (results, status) {
+                            console.log(results);
+                            console.log(status);
+                            if (status == 'OK') {
+                                place_id = results[0].place_id;
+                                if (e.placeId != null) {
+                                    place_id = e.placeId;
+                                    console.log(place_id);
+                                    console.log(e.infoWindow);
+                                }
+
+                                var request = {
+                                    placeId: place_id
+                                };
+                                callback = function (place, status) {
+                                    console.log(place);
+                                    console.log(status);
+                                    if (place.photos != null) {
+                                        console.log(place.photos[0].getUrl({
+                                            maxWidth: 640
+                                        }));
+                                    }
+                                }
+                                service = new google.maps.places.PlacesService(map.map);
+                                service.getDetails(request, callback);
+
+                            }
+                        }
+                    });
+
+                },
+            });
+
+
+        });
+
+        function detail_click() {
+            $("#map_deatil").slideToggle("slow");
+            $("#food_deatil").slideToggle("slow");
+        }
+
+        function detail_click2() {
+            $("#map_deatil2").slideToggle("slow");
+            $("#food_deatil2").slideToggle("slow");
+        }
+
+        function w3_open() {
+            if (mySidebar.style.display === 'block') {
+                mySidebar.style.display = 'none';
+            } else {
+                mySidebar.style.display = 'block';
+            }
+        }
+
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
+        }
+
+    </script>
+{% endblock %}

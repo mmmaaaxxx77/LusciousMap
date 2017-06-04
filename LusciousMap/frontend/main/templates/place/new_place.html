@@ -1,0 +1,194 @@
+{% extends '_default.html' %}
+{% load staticfiles %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "css/new_place.css" %}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="w3-container" style="padding:128px 16px" id="home">
+        <h3 class="w3-center">分享好食</h3>
+        <p class="w3-center w3-large">若Google Map尚未新增此店家，我們會協助通報，標點完成需等待Google Map審核喔，不會馬上出現。</p>
+        <p class="w3-center w3-large">您尚未登入，登入新增店家會一並增加在您的好食列表喔。</p>
+        <div class="w3-row-padding" style="margin-top:10px">
+            <div class="w3-half">
+                <p>
+                <div class="container-4" style="margin: 0 auto">
+                    <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
+                    <button class="icon"><i class="fa fa-search"></i></button>
+                </div>
+                </p>
+                <div id="map" class="" style="width:100%; min-height: 500px;"></div>
+            </div>
+            <div class="w3-half" id="new">
+                <form action="/action_page.php" target="_blank">
+                    <p>
+                        名稱 (*)
+                        <input class="w3-input w3-border" type="text" placeholder="Name" required="" name="Name">
+                    </p>
+                    <p>
+                        類型 (*) - 預設『小吃』
+                        <select class="w3-input w3-border form-select">
+                            <option value="volvo">小吃</option>
+                            <option value="saab">店家</option>
+                            <option value="opel">餐廳</option>
+                        </select>
+                    </p>
+                    <p>
+                        國家 (*) - 預設『台灣』
+                        <select class="w3-input w3-border form-select">
+                            <option value="volvo">台灣</option>
+                            <option value="saab">日本</option>
+                            <option value="opel">韓國</option>
+                            <option value="audi">新加坡</option>
+                        </select>
+                    </p>
+                    <p>
+                        地區
+                        <select class="w3-input w3-border form-select">
+                            <option value="null">---</option>
+                            <option value="volvo">台北市</option>
+                            <option value="saab">新北市</option>
+                            <option value="opel">高雄市</option>
+                            <option value="audi">台南市</option>
+                        </select>
+                    </p>
+                    <p>
+                        景點
+                        <select class="w3-input w3-border form-select">
+                            <option value="null">---</option>
+                            <option value="volvo">士林夜市</option>
+                            <option value="saab">晴光市場</option>
+                            <option value="opel">西門町</option>
+                            <option value="audi">東區</option>
+                        </select>
+                    </p>
+                    <p>
+                        敘述
+                        <textarea class="w3-input w3-border" cols="5"></textarea>
+                    </p>
+                    <p>
+                        照片
+                        <input class="w3-input w3-border" type="file">
+                    </p>
+                    <p>
+                        <button class="w3-button w3-black w3-hover-grey" type="submit">
+                            <i class="fa fa-paper-plane"></i>&nbsp&nbsp新增
+                        </button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% include '_footer.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "plugins/gmaps.js" %}"></script>
+    <script>
+        var map;
+        var marks = [];
+        $(document).ready(function () {
+            map = new GMaps({
+                div: '#map',
+                lat: 25.169712,
+                lng: 121.440934,
+                zoom: 16,
+                zoomControl: true,
+                panControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                overviewMapControl: false,
+                mapTypeId: 'roadmap',
+                click: function (e) {
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    console.log(e);
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: '<p>HTML Content</p>'
+                    });
+                    mark = map.addMarker({
+                        lat: e.latLng.lat(),
+                        lng: e.latLng.lng(),
+                        title: 'Lima',
+                        infoWindow: infoWindow,
+                    })
+                    marks[marks.length] = mark;
+                    //setTimeout(function(){mark.setAnimation(null)}, 200);
+                    console.log(mark);
+                    infoWindow.open(map, mark);
+
+
+                    GMaps.geocode({
+                        address: e.latLng.lat() + "," + e.latLng.lng(),
+                        callback: function (results, status) {
+                            console.log(results);
+                            console.log(status);
+                            if (status == 'OK') {
+                                place_id = results[0].place_id;
+                                if (e.placeId != null) {
+                                    place_id = e.placeId;
+                                    console.log(place_id);
+                                    console.log(e.infoWindow);
+                                }
+
+                                var request = {
+                                    placeId: place_id
+                                };
+                                callback = function (place, status) {
+                                    console.log(place);
+                                    console.log(status);
+                                    if (place.photos != null) {
+                                        console.log(place.photos[0].getUrl({
+                                            maxWidth: 640
+                                        }));
+                                    }
+                                }
+                                service = new google.maps.places.PlacesService(map.map);
+                                service.getDetails(request, callback);
+
+                            }
+                        }
+                    });
+
+                },
+            });
+
+
+            GMaps.geolocate({
+                success: function (position) {
+                    map.setCenter(position.coords.latitude, position.coords.longitude);
+                },
+                error: function (error) {
+                    alert('Geolocation failed: ' + error.message);
+                },
+                not_supported: function () {
+                    alert("Your browser does not support geolocation");
+                },
+                always: function () {
+                    //alert("Done!");
+                }
+            });
+
+        });
+
+        function w3_open() {
+            if (mySidebar.style.display === 'block') {
+                mySidebar.style.display = 'none';
+            } else {
+                mySidebar.style.display = 'block';
+            }
+        }
+
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
+        }
+
+    </script>
+{% endblock %}

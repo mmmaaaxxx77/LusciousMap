@@ -1,0 +1,445 @@
+{% extends '_default.html' %}
+{% load staticfiles %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "css/map_edit.css" %}">
+    <link rel="stylesheet" href="{% static "plugins/jquery-ui.min.css" %}">
+{% endblock %}
+
+{% block body %}
+
+    <div class="w3-container" style="padding:45px 16px" id="home">
+    </div>
+
+    <div class="w3-container" id="map" style="height: calc(100% - 95px);">
+    </div>
+
+    <div class="edit-right-side">
+        <div class="container-4" style="margin: 0 auto">
+            <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
+            <button class="icon"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+
+    <div class="w3-col w3-hide-small auto-left-side edit-left-side">
+        <div class="w3-margin-bottom w3-white" style="border-radius: 5px;">
+            <div class="w3-center" style="border-bottom: 1px solid #ABD0CE;">
+                <button id="btn_my_food" class="w3-bar-item w3-button edit-menu-btn edit-menu-btn-active"
+                        onclick="open_food()"><i class="icon-food"></i> &nbsp我的店家
+                </button>
+                <button id="btn_my_map" class="w3-bar-item w3-button edit-menu-btn" onclick="open_map()"><i
+                        class="fa fa-map-o"></i> &nbsp我的地圖
+                </button>
+                <button id="btn_my_follow" class="w3-bar-item w3-button edit-menu-btn" onclick="open_follow()"><i
+                        class="fa fa-thumbs-o-up"></i> &nbsp我的追蹤
+                </button>
+            </div>
+
+            <!-- 店家detail -->
+            <div id="food_deatil" style="display: none;">
+                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
+                <div class="w3-container">
+                    <p>
+                        <button onclick="open_map_detail()" class="w3-button w3-light-grey w3-block"><i
+                                class="fa fa-reply"></i> 淡水超好吃小吃
+                        </button>
+                    </p>
+                    <h4><i class="icon-food"></i>&nbsp&nbsp斜坡淡水阿給</h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>超級推薦這間的阿給，好吃！</p>
+                </div>
+            </div>
+            <!-- 店家detail end -->
+
+            <!-- 我的地圖detail -->
+            <div id="s_map_detail" style="display: none;">
+                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
+                <div class="w3-container" id="map_deatil">
+                    <h4><i class="fa fa-map-o"></i>&nbsp&nbsp淡水超好吃小吃
+                        <small style="color: #999">(22)</small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>我的淡水私房美食！</p>
+                </div>
+                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 蔥油餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 石頭餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤鳥蛋
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 超好吃超貴咖哩
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 可麗餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 一口煎餃
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 印度料理
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤魷魚
+                    </li>
+                </ul>
+            </div>
+            <!-- 我的地圖detail end -->
+
+            <!-- 我的店家 -->
+            <div id="food">
+                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 蔥油餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 石頭餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤鳥蛋
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 超好吃超貴咖哩
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 可麗餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 一口煎餃
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 印度料理
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤魷魚
+                    </li>
+                </ul>
+            </div>
+            <!-- 我的店家 end -->
+
+            <!-- 我的地圖 -->
+            <div id="s_map" style="display: none;">
+                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                    <li class="w3-padding-10 detail-item" onclick="open_map_detail()"
+                    ">
+                    <small><i class="fa fa-map-o"></i></small>
+                    &nbsp<b>5星</b> 蔥油餅</li>
+                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 石頭餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 烤鳥蛋
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 超好吃超貴咖哩
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 可麗餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 一口煎餃
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 印度料理
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 烤魷魚
+                    </li>
+                </ul>
+            </div>
+            <!-- 我的地圖 end -->
+
+            <!-- 我的追蹤 -->
+            <div id="my_follow" style="display: none;">
+                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                    <li class="w3-padding-10 detail-item" onclick="open_map_detail()">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 士林超好吃小吃
+                        <small class="sub-author">mmmaaaxxx77</small>
+                    </li>
+                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 石頭餅
+                        <small class="sub-author">mmmaaaxxx77</small>
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤鳥蛋
+                        <small class="sub-author">rainie</small>
+                    </li>
+                    <li class="w3-padding-10 detail-item" onclick="detail_click()">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 台大好吃小吃
+                        <small class="sub-author">gina</small>
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 超好吃超貴咖哩
+                        <small class="sub-author">sonia77</small>
+                    </li>
+                </ul>
+            </div>
+            <!-- 我的追蹤 end -->
+
+            <div class="w3-card-2" style="padding-bottom: 10px;">
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="detail" class="w3-container w3-hide-ipad" style="padding-top:10px;">
+        <div class="w3-margin-bottom w3-white w3-hide-large" style="border-radius: 5px;">
+            <div class="w3-card-2" style="padding-bottom: 10px;">
+                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
+                <div class="w3-container" id="map_deatil2">
+                    <h4>淡水超好吃小吃
+                        <small style="color: #999">(22)</small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>我的淡水私房美食！</p>
+                    <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                        <li class="w3-padding-10 detail-item" onclick="detail_click2()"><b>5星</b> 蔥油餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 石頭餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤鳥蛋</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 超好吃超貴咖哩</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 可麗餅</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 一口煎餃</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 印度料理</li>
+                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤魷魚</li>
+                    </ul>
+                </div>
+                <div class="w3-container" id="food_deatil2" style="display: none;">
+                    <p>
+                        <button onclick="detail_click2()" class="w3-button w3-light-grey w3-block"><i
+                                class="fa fa-reply"></i> 淡水超好吃小吃
+                        </button>
+                    </p>
+                    <h4>斜坡淡水阿給
+                        <small><a href="#home" class="w3-button" style="color: #666;"><i class="fa fa-map-o"></i> 地圖</a>
+                        </small>
+                    </h4>
+                    <span class="card-info-msg">想食&nbsp</span>
+                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
+                    <p>超級推薦這間的阿給，好吃！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "plugins/gmaps.js" %}"></script>
+    <script type="text/javascript" src="{% static "plugins/jquery-ui.min.js" %}"></script>
+    <script>
+        var map;
+        var marks = [];
+
+        var infoHTML = '<p>名稱 (*)<input class="w3-input w3-border" type="text" placeholder="Name" required="" name="Name"></p><p>敘述<textarea class="w3-input w3-border" cols="5"></textarea></p><p>照片<input class="w3-input w3-border" type="file"></p><p><button class="w3-button w3-black w3-hover-grey" type="submit"><i class="fa fa-paper-plane"></i>&nbsp&nbsp新增</button></p>';
+
+        $(document).ready(function () {
+
+            var availableTags = [
+                "ActionScript",
+                "AppleScript",
+                "Asp",
+                "BASIC",
+                "C",
+                "C++",
+                "Clojure",
+                "COBOL",
+                "ColdFusion",
+                "Erlang",
+                "Fortran",
+                "Groovy",
+                "Haskell",
+                "Java",
+                "JavaScript",
+                "Lisp",
+                "Perl",
+                "PHP",
+                "Python",
+                "Ruby",
+                "Scala",
+                "Scheme"
+            ];
+            $("#search").autocomplete({
+                source: availableTags
+            });
+
+
+            map = new GMaps({
+                div: '#map',
+                lat: 25.169712,
+                lng: 121.440934,
+                zoom: 16,
+                zoomControl: true,
+                zoomControlOptions: {
+                    position: google.maps.ControlPosition.RIGHT_TOP
+                },
+                panControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                overviewMapControl: false,
+                mapTypeId: 'roadmap',
+                click: function (e) {
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    console.log(e);
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: infoHTML
+                    });
+                    mark = map.addMarker({
+                        lat: e.latLng.lat(),
+                        lng: e.latLng.lng(),
+                        title: 'Lima',
+                        infoWindow: infoWindow,
+                    })
+                    marks[marks.length] = mark;
+                    //setTimeout(function(){mark.setAnimation(null)}, 200);
+                    console.log(mark);
+                    infoWindow.open(map, mark);
+
+
+                    GMaps.geocode({
+                        address: e.latLng.lat() + "," + e.latLng.lng(),
+                        callback: function (results, status) {
+                            console.log(results);
+                            console.log(status);
+                            if (status == 'OK') {
+                                place_id = results[0].place_id;
+                                if (e.placeId != null) {
+                                    place_id = e.placeId;
+                                    console.log(place_id);
+                                    console.log(e.infoWindow);
+                                }
+
+                                var request = {
+                                    placeId: place_id
+                                };
+                                callback = function (place, status) {
+                                    console.log(place);
+                                    console.log(status);
+                                    if (place.photos != null) {
+                                        console.log(place.photos[0].getUrl({
+                                            maxWidth: 640
+                                        }));
+                                    }
+                                }
+                                service = new google.maps.places.PlacesService(map.map);
+                                service.getDetails(request, callback);
+
+                            }
+                        }
+                    });
+
+                },
+            });
+
+
+        });
+
+        function toggleTopBtn(id) {
+            $(".edit-menu-btn").removeClass("edit-menu-btn-active");
+            $("#" + id).addClass("edit-menu-btn-active");
+        }
+
+        function open_food() {
+            $("#food").slideDown('slow');
+            $("#food_deatil").slideUp('slow');
+            $("#s_map").slideUp('slow');
+            $("#s_map_detail").slideUp('slow');
+            $("#my_follow").slideUp('slow');
+            toggleTopBtn("btn_my_food");
+        }
+
+        function open_map() {
+            $("#food").slideUp('slow');
+            $("#food_deatil").slideUp('slow');
+            $("#s_map").slideDown('slow');
+            $("#s_map_detail").slideUp('slow');
+            $("#my_follow").slideUp('slow');
+            toggleTopBtn("btn_my_map");
+        }
+
+        function open_follow() {
+            $("#food").slideUp('slow');
+            $("#food_deatil").slideUp('slow');
+            $("#s_map").slideUp('slow');
+            $("#s_map_detail").slideUp('slow');
+            $("#my_follow").slideDown('slow');
+            toggleTopBtn("btn_my_follow");
+        }
+
+        function open_food_detail() {
+            $("#food_deatil").slideDown("slow");
+            $("#s_map_detail").slideUp("slow");
+        }
+
+        function open_map_detail() {
+            $("#s_map_detail").slideDown("slow");
+            $("#food_deatil").slideUp("slow");
+            $("#s_map").slideUp('slow');
+            $("#my_follow").slideUp('slow');
+            $("#food").slideUp('slow');
+        }
+
+        function detail_click2() {
+            $("#map_deatil2").slideToggle("slow");
+            $("#food_deatil2").slideToggle("slow");
+        }
+
+        /*function w3_open() {
+         if (mySidebar.style.display === 'block') {
+         mySidebar.style.display = 'none';
+         } else {
+         mySidebar.style.display = 'block';
+         }
+         }*/
+
+        // Close the sidebar with the close button
+        function w3_close() {
+            mySidebar.style.display = "none";
+        }
+
+
+    </script>
+{% endblock %}
+

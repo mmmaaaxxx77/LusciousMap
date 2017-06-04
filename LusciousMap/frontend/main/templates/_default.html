@@ -1,0 +1,85 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>好食地圖 Luscious Map {% block title %}{% endblock %}</title>
+    <meta name="viewport"
+          content="width=device-width ,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="UTF-8">
+
+    <link rel="Shortcut Icon" type="image/x-icon" href="{%static "img/lusciousmap.ico" %}" />
+
+    {% block meta %}{% endblock %}
+
+    {% include '_css.html' %}
+
+    {% block header %}{% endblock %}
+</head>
+
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+    <div class="w3-bar w3-white w3-card-2" id="myNavbar">
+        <a href="{% url "index" %}#home" class="w3-bar-item w3-button w3-wide header-height"> <img class="top-img"
+                                                                                           src="{% static "img/title_black.png" %}"
+                                                                                           style=""> <span
+                class="w3-hide-medium w3-hide-small w3-hide-ipad">Luscious Map</span></a>
+        <!-- Right-sided navbar links -->
+        <div class=" w3-hide-small">
+            <div class="w3-right">
+                <a href="#map" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-map-o"></i>
+                    &nbsp好食地圖</a>
+                <a href="#teach" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-book"></i>
+                    &nbsp地圖教學</a>
+                <a href="#teach" class="w3-bar-item w3-button header-height header-button"><i
+                        class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
+                <a href="#pricing" class="w3-bar-item w3-button header-height header-button"><i
+                        class="fa fa-sign-language"></i> &nbsp好食直播</a>
+                <a href="#about" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-th"></i>
+                    &nbsp關於我們</a>
+                <a href="#contact" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-user"></i>
+                    &nbsp註冊/登入</a>
+            </div>
+        </div>
+        <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+        <a href="javascript:void(0)"
+           class="header-height header-button w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+           onclick="w3_open()" style="width: 30%;">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+</div>
+<!-- Navbar (sit on top) end -->
+
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="w3-sidebar w3-bar-block w3-card-2 w3-animate-left w3-hide-medium w3-hide-large togger-bar"
+     style="display:none" id="mySidebar">
+    <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">&times;
+        &nbsp關閉</a>
+    <a href="#home" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp淡水超好吃小吃地圖</a>
+    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp淡水超好吃小吃列表</a>
+    <br>
+    <div>
+        <div style="margin: 0 auto; width: 80%; height: 1px; border-top: 1px solid #ccc;"></div>
+    </div>
+    <br>
+    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-map-o"></i> &nbsp好食地圖</a>
+    <a href="#team" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-book"></i> &nbsp地圖教學</a>
+    <a href="#team" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
+    <a href="#work" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-language"></i> &nbsp好食直播</a>
+    <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-th"></i> &nbsp關於我們</a>
+    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-user"></i> &nbsp註冊/登入</a>
+</nav>
+<!-- Sidebar on small screens when clicking the menu icon end -->
+
+{% block body %}{% endblock %}
+
+
+{% include '_script.html' %}
+{% block script %}{% endblock %}
+
+</body>
+
+</html>
