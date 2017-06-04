@@ -157,7 +157,8 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': BASE_DIR + '/logs/log.log',
+            #'filename': BASE_DIR + '/logs/log.log',
+            'filename': '/home/analysis/logs/LusciousMap/log.log',
             'formatter': 'normal'
         },
         'console': {
