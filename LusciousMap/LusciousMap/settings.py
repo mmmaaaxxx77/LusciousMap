@@ -175,3 +175,6 @@ LOGGING = {
         },
     }
 }
+
+# Header: X-Frame-Options
+X_FRAME_OPTIONS = 'DENY'
