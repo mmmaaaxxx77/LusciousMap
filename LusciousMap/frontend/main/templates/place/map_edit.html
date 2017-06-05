@@ -10,21 +10,10 @@
 
 {% block body %}
 
-    <div class="w3-container" style="padding:45px 16px" id="home">
+    <div class="w3-container" style="padding:41px 16px" id="home">
     </div>
-
-    <div class="w3-container" id="map" style="height: calc(100% - 95px);">
-    </div>
-
-    <div class="edit-right-side">
-        <div class="container-4" style="margin: 0 auto">
-            <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
-            <button class="icon"><i class="fa fa-search"></i></button>
-        </div>
-    </div>
-
-    <div class="w3-col w3-hide-small auto-left-side edit-left-side">
-        <div class="w3-margin-bottom w3-white" style="border-radius: 5px;">
+    <div style="height: calc(100% - 84px);">
+        <div class="w3-col s3 w3-white">
             <div class="w3-center" style="border-bottom: 1px solid #ABD0CE;">
                 <button id="btn_my_food" class="w3-bar-item w3-button edit-menu-btn edit-menu-btn-active"
                         onclick="open_food()"><i class="icon-food"></i> &nbsp我的店家
@@ -36,7 +25,6 @@
                         class="fa fa-thumbs-o-up"></i> &nbsp我的追蹤
                 </button>
             </div>
-
             <!-- 店家detail -->
             <div id="food_deatil" style="display: none;">
                 <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
@@ -142,7 +130,6 @@
                 </ul>
             </div>
             <!-- 我的店家 end -->
-
             <!-- 我的地圖 -->
             <div id="s_map" style="display: none;">
                 <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
@@ -214,54 +201,17 @@
             </div>
             <!-- 我的追蹤 end -->
 
-            <div class="w3-card-2" style="padding-bottom: 10px;">
+        </div>
+        <div class="w3-col s9 w3-container" id="map" style="height: calc(100%);"></div>
+    </div>
 
-            </div>
-
+    <div class="edit-right-side">
+        <div class="container-4" style="margin: 0 auto">
+            <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
+            <button class="icon"><i class="fa fa-search"></i></button>
         </div>
     </div>
 
-    <div id="detail" class="w3-container w3-hide-ipad" style="padding-top:10px;">
-        <div class="w3-margin-bottom w3-white w3-hide-large" style="border-radius: 5px;">
-            <div class="w3-card-2" style="padding-bottom: 10px;">
-                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
-                <div class="w3-container" id="map_deatil2">
-                    <h4>淡水超好吃小吃
-                        <small style="color: #999">(22)</small>
-                    </h4>
-                    <span class="card-info-msg">想食&nbsp</span>
-                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
-                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
-                    <p>我的淡水私房美食！</p>
-                    <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
-                        <li class="w3-padding-10 detail-item" onclick="detail_click2()"><b>5星</b> 蔥油餅</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 石頭餅</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤鳥蛋</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 超好吃超貴咖哩</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 可麗餅</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 一口煎餃</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 印度料理</li>
-                        <li class="w3-padding-10 detail-item"><b>5星</b> 烤魷魚</li>
-                    </ul>
-                </div>
-                <div class="w3-container" id="food_deatil2" style="display: none;">
-                    <p>
-                        <button onclick="detail_click2()" class="w3-button w3-light-grey w3-block"><i
-                                class="fa fa-reply"></i> 淡水超好吃小吃
-                        </button>
-                    </p>
-                    <h4>斜坡淡水阿給
-                        <small><a href="#home" class="w3-button" style="color: #666;"><i class="fa fa-map-o"></i> 地圖</a>
-                        </small>
-                    </h4>
-                    <span class="card-info-msg">想食&nbsp</span>
-                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
-                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
-                    <p>超級推薦這間的阿給，好吃！</p>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
 {% block script %}

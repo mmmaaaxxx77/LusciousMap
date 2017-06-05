@@ -21,6 +21,7 @@ from django.utils.translation import ugettext_lazy as _
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #url(r'', include('frontend.main.urls')),
+    url(r'^accounts/', include('allauth.urls')),
 ]
 
 urlpatterns += i18n_patterns(
