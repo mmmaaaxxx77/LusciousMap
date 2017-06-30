@@ -1,8 +1,9 @@
 from django.contrib import admin
 
 # Register your models here.
-from frontend.map_basic.models import LMCountry, LMCity, LMAttraction, LMPhoto, LMRating, LMPlaceType, LMPlace
+from frontend.map_basic.models import LMCountry, LMCity, LMAttraction, LMPhoto, LMRating, LMPlaceType, LMPlace, LMTag
 
+admin.site.register(LMTag)
 admin.site.register(LMCountry)
 admin.site.register(LMCity)
 admin.site.register(LMAttraction)

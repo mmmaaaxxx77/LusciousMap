@@ -1,0 +1,163 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>好食地圖 Luscious Map {{ place.name }}</title>
+
+    <link rel="Shortcut Icon" type="image/x-icon" href="{% static "frontend/img/lusciousmap.ico" %}"/>
+
+    <link rel="stylesheet" href="{% static "frontend/css/main.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/font.css" %}?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+            background-color: #fff;
+        }
+
+        #map {
+            width: 100%;
+            height: calc(50%);
+            background: url('{% url "get_photo" image_id=place.map_image.id %}?width=350&height=155');
+            background-position: center top;
+            padding: 10px;
+        }
+
+        #map:hover {
+
+        }
+
+        .border {
+            width: 350px;
+            height: 300px;
+            border: solid 1px #CCC;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+        }
+
+        .top {
+            padding: 7px;
+            width: 350px;
+            height: calc(12%);
+            /*position: absolute;
+            top: 0;*/
+        }
+
+        .top-img {
+            width: 80px;
+        }
+
+        .bottom {
+            padding: 8px;
+            width: 100%;
+            height: calc(13%);
+        }
+
+        .bottom-left {
+            width: 40%;
+            float: left;
+        }
+
+        .bottom-right {
+            width: 60%;
+            float: left;
+            text-align: right;
+        }
+
+        .label {
+            margin-bottom: 2px;
+            margin-left: 2px;
+            margin-right: 2px;
+            font-size: 12px;
+            padding: 2px 5px 2px 5px;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            background-color: #d65454;
+            color: #fff;
+            float: left;
+            opacity: 0.7;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
+        .detail{
+            padding: 8px;
+            width: 100%;
+            height: calc(25%);
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="border">
+
+    <div class="top">
+        <a target="_blank" href="{% url "index" %}"><img class="top-img pointer"
+                                                         src="{% static "frontend/img/title_black.png" %}" style=""></a>
+        <a target="_blank" href="{% url "place_view" place_id=place.id %}"><span class="pointer"
+                                                                                 style="color: #666;font-size: 1.1em;">{{ place.name }}</span></a>
+    </div>
+    <div id="map">
+        {% for label in place.tags.all|slice:":5" %}
+            <div class="label">{{ label.name }}</div>
+        {% endfor %}
+        <a target="_blank" href="{% url "place_view" place_id=place.id %}">
+            <div class="label">...</div>
+        </a>
+    </div>
+    <div class="detail">
+        <div style="height:100%;overflow: scroll; color:#666;font-size: 0.9em;">
+            {{ place.google_address }}
+            {% if place.google_address|length > 0 %}
+            <br/>
+            {% endif %}
+
+            {{ place.google_international_phone_number }}
+            {% if place.google_international_phone_number|length > 0 %}
+            <br/>
+            {% endif %}
+
+            {{ place.description }}
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="bottom-left">
+            <span style="color: #666;">
+                <a target="_blank" href="{% url "place_view" place_id=place.id %}"><span class="pointer">
+                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                    {{ place.rating.good.count }}
+                </span></a>
+                &nbsp
+                <a target="_blank" href="{% url "place_view" place_id=place.id %}"><span class="pointer">
+                    <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+                    {{ place.rating.bad.count }}
+                </span></a>
+            </span>
+        </div>
+        <div class="bottom-right">
+            <a target="_blank" href="{{ place.google_map_url }}">
+                <span class="pointer" style="color: #999;font-size: 1.2em;">
+                    <i class="fa fa-map-o" aria-hidden="true"></i>&nbsp開啟Google地圖
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+<script type="text/javascript" src="{% static "frontend/plugins/jquery-3.2.1.min.js" %}"></script>
+

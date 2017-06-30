@@ -6,13 +6,14 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-    <link rel="stylesheet" href="{% static "css/index.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/index.css" %}">
 {% endblock %}
 
 {% block body %}
 
     <!-- Header with full-height image -->
-    <header class="bgimg-1 w3-display-container w3-grayscale-min header header-bg-img" id="home">
+    <header class="bgimg-1 w3-display-container w3-grayscale-min header header-bg-img change-background-image" id="home"
+            style="background-image: url('http://localhost:8000/zh-hant/photo/3e9e9914-90b1-409f-9d8d-3edb9b8eae9b/?width=1280&height=653');background-position:center;background-repeat:no-repeat;background-size:cover;">
         <div class="w3-display-left w3-text-white header-left-side" style="padding:48px">
             <span class="w3-jumbo w3-hide-small">你的、我的 必吃美食</span>
             <br>
@@ -20,7 +21,7 @@
             <br>
             <span class="w3-large header-content">每個人心中都有他的私房美食，每個人心中都有他的那張地圖 ・・・</span>
             <p>
-                <a href="#about"
+                <a href="{% url "map_edit" %}"
                    class="w3-button w3-white w3-padding-large w3-large w3-margin-top w3-opacity w3-hover-opacity-off">建立你的好食地圖</a>
                 <span class="w3-hide-small">或</span>
                 <a href="{% url "new_place" %}"
@@ -28,53 +29,84 @@
             </p>
         </div>
         <div class="w3-display-right w3-text-white w3-hide-small w3-mobile" style="padding:48px">
-            <iframe class="w3-hide-medium" width="550" height="500" frameborder="0" style="border:0"
-                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDqTKzvzglnB01LdExTKmpGaim24I50dW4&q=Space+Needle,Seattle+WA"
-                    allowfullscreen>
-            </iframe>
+            <div id="cover_photo" class="change-background-image"
+                 style="width:550px;height:500px;background-image: url('http://localhost:8000/zh-hant/photo/3e9e9914-90b1-409f-9d8d-3edb9b8eae9b/');background-position:center;background-repeat:no-repeat;background-size:cover;"></div>
         </div>
         <div class="w3-display-bottomleft w3-xxxlarge" style="padding:24px 48px;color: #EFFFE9;">
-            <i class="fa fa-facebook-square w3-hover-opacity header-social-icon"></i>
+            <a href="https://www.facebook.com/LusciousMap/" target="_blank"><i
+                    class="fa fa-facebook-square w3-hover-opacity header-social-icon"></i></a>
         </div>
     </header>
 
     <!-- About Section -->
     <div class="w3-container" style="padding:128px 16px" id="map">
-        <h1 class="w3-center"><img src="{% static "img/title_black.png" %}" style="height: 50px;"></h1>
+        <h1 class="w3-center"><img src="{% static "frontend/img/title_black.png" %}" style="height: 50px;"></h1>
         <div class="w3-center w3-large">
             <div class="container-4" style="margin: 0 auto">
                 <input type="search" id="search" placeholder="搜尋好食地圖、美食或地區 ..."/>
-                <button class="icon"><i class="fa fa-search"></i></button>
+                <button class="icon" data-bind="click:clickSearch"><i class="fa fa-search"></i></button>
             </div>
         </div>
-        <div class="w3-row-padding w3-center" style="margin-top:64px">
+        <div class="w3-center w3-large" style="display: none;" data-bind="visible: listItems().length == 0">
+            <br><br><br>
+            <a href="{% url "map_edit" %}">尚無相關地圖或地點。<br/>點我來建立你的好食地圖！</a><br>
+        </div>
+        <div class="w3-row-padding w3-center" style="margin-top:64px"
+             data-bind="template: {foreach: listItems, beforeRemove: hideListElement, afterAdd: showListElement}">
             <!-- card -->
-            <div class="w3-col l3 m6 w3-margin-bottom card">
+            <div class="w3-col l3 m6 w3-margin-bottom card" style="display: none;">
                 <div class="w3-card-2 card-h">
                     <div class="w3-container card-bg"
-                         style="background-image: url(https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=14&size=300x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A)">
+                         data-bind="style: { backgroundImage: 'url(\''+ map_image.image_url() + '\')' }">
+                        <!--style="background-image: url(https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=14&size=300x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A)"-->
                     </div>
                     <div class="w3-container card-content card-bg">
-                        <button class="hide dark" title="Mark as read and hide" type="button"></button>
+                        <a target="_self" data-bind="attr: { href: url()}">
+                        <span data-bind="if:model_type() == 'PLACE'"><i class="fa fa-map-marker card_icon"
+                                                                        aria-hidden="true"></i></span>
+                        <span data-bind="if:model_type() == 'MAP'"><i class="fa fa-map card_icon"
+                                                                      aria-hidden="true"></i></span>
+                        <span data-bind="if:model_type() == 'MAPPLACE'"><i class="fa fa-map-marker card_icon"
+                                                                           aria-hidden="true"></i></span>
+                        </a>
+                        <button class="hide dark" title="follow" type="button"></button>
                     </div>
                     <div class="w3-container">
                         <div class="card-info">
-                            <span class="card-info-msg">想食&nbsp</span>
+                            <i class="fa fa-thumbs-o-up" aria-hidden="true"
+                               data-bind="click:function(){clickRating($data.rating.good, $data.rating_good_url());}"></i>
+                            <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            &nbsp
+                            <i class="fa fa-thumbs-o-down" aria-hidden="true"
+                               data-bind="click:function(){clickRating($data.rating.bad, $data.rating_bad_url());}"></i>
+                            <span class="card-info-msg" data-bind="text:rating.bad"></span>
+                            {% comment %}
                             <span class="card-info-msg card-info-star">
                 <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
                                     class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
                 </span>
+                            {% endcomment %}
                             &nbsp
-                            <span class="label c-color1">地圖</span>
-                            <span class="label c-color3">台灣</span>
-                            <span class="label c-color4">台北市</span>
-                            <span class="label c-color4">士林夜市</span>
+                            <span class="label c-color3" data-bind="text:country.long_name"></span>
+
+                            <span data-bind="foreach: tags">
+                                <span class="label c-color4" data-bind="text:name">台北市</span>
+                            </span>
                         </div>
-                        <p class="w3-opacity">士林受不了美食</p>
+                        <a target="_self" data-bind="attr: { href: url()}">
+                            <p class="w3-opacity">
+                                <span data-bind="text:name"></span>
+                                &nbsp
+                                <small data-bind="if:user.username() != ''">(<span
+                                        data-bind="text: user.username"></span>)
+                                </small>
+                            </p>
+                        </a>
                     </div>
                 </div>
             </div>
             <!-- end card -->
+            {% comment %}
             <!-- card -->
             <div class="w3-col l3 m6 w3-margin-bottom card">
                 <div class="w3-card-2 card-h">
@@ -106,7 +138,7 @@
             <div class="w3-col l3 m6 w3-margin-bottom card">
                 <div class="w3-card-2 card-h">
                     <div class="w3-container card-bg"
-                         style="background-image: url(https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=14&size=300x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A)">
+                         style="background-image: url(https://maps.googleapis.com/maps/api/staticmap?scale=2&center=25.0173405,121.53975179999998&&zoom=16&size=500x500&maptype=roadmap&markers=color:blue%7C25.0173405,121.53975179999998&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A)">
                     </div>
                     <div class="w3-container card-content card-bg">
                         <button class="hide dark" title="Mark as read and hide" type="button"></button>
@@ -207,12 +239,15 @@
                 </div>
             </div>
             <!-- end card -->
-            <!-- more -->
-            <p>
-                <button class="w3-button w3-block more"><i class="fa fa-spinner "></i> 更多</button>
-            </p>
-            <!-- more end -->
+            {% endcomment %}
         </div>
+        <!-- more -->
+        <p>
+            <button class="w3-button w3-block more" data-bind="click: clickListMore, visible: hideMoreBtn"><i
+                    class="fa fa-spinner "></i> 更多
+            </button>
+        </p>
+        <!-- more end -->
     </div>
 
     <!-- Promo Section "Statistics" -->
@@ -222,11 +257,13 @@
             <br>
         </div>
         <div class="w3-quarter">
-            <span class="w3-xxlarge">166+</span>
+            <span class="w3-xxlarge" data-bind="text: detail.map_count">166+</span>
+            <span class="w3-xxlarge">+</span>
             <br>地圖數量
         </div>
         <div class="w3-quarter">
-            <span class="w3-xxlarge">3,123+</span>
+            <span class="w3-xxlarge" data-bind="text: detail.place_count">3,123+</span>
+            <span class="w3-xxlarge">+</span>
             <br>好食數量
         </div>
     </div>
@@ -246,22 +283,273 @@
                 <p>
                     我們是一個小小的團隊，但有無限的創意和想法，<br>
                     希望打造出更多線上與線下、人與人情感之間的連結，<br>
-                    期望能有任何形式的贊助或合作可以讓我們的服務更加完整與多元。<br>
-                    對於『好食地圖』有什麼意見或想法，也可以與我們聯絡，或上Facebook粉絲團與我們交流。
+                    期望能有更多意見回饋讓我們更好。<br>
+                    對於『好食地圖』有什麼意見或想法，可以上Facebook粉絲團與我們交流喔。
                 </p>
                 <p>
-                    <a href="#work" class="w3-button c-btn"><i class="fa fa-envelope-open-o">&nbsp;</i> 與我們聯絡</a>
-                    <a href="#work" class="w3-button c-btn"><i class="fa fa-facebook-square">&nbsp;</i> 好食地圖粉絲團</a>
+                    <a href="https://www.facebook.com/LusciousMap/" target="_blank" class="w3-button c-btn"><i
+                            class="fa fa-facebook-square">&nbsp;</i> 好食地圖粉絲團</a>
                 </p>
             </div>
+
+            <iframe frameborder="0" width="350" height="300" src="http://localhost:8000/zh-hant/webplugin/place/565953ef-9fe9-4156-ac1a-980d4f62cd79/"></iframe>
+
+
         </div>
     </div>
+    <div id="h_map" style="display: none"></div>
 
-{% include '_footer.html' %}
+    {% comment %}
+    <script type="text/html" id="tmp_map_card">
+        <div class="w3-col l3 m6 w3-margin-bottom card">
+            <div class="w3-card-2 card-h">
+                <div class="w3-container card-bg"
+                     style="background-image: url(https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=14&size=300x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A)">
+                </div>
+                <div class="w3-container card-content card-bg">
+                    <button class="hide dark" title="Mark as read and hide" type="button"></button>
+                </div>
+                <div class="w3-container">
+                    <div class="card-info">
+                        <span class="card-info-msg">想食&nbsp</span>
+                        <span class="card-info-msg card-info-star">
+                <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
+                                class="fa fa-star-o"></i><i class="fa fa-star-o"></i>
+                </span>
+                        &nbsp
+                        <span class="label c-color1">地圖</span>
+                        <span class="label c-color3">台灣</span>
+                        <span class="label c-color4">台南市</span>
+                    </div>
+                    <p class="w3-opacity">台南不能說的小吃</p>
+                </div>
+            </div>
+        </div>
+    </script>
+    {% endcomment %}
+
+    {% include '_footer.html' %}
 {% endblock %}
 
 {% block script %}
+    <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
     <script>
+        $(function () {
+            $('#search').keypress(function (e) {
+                if (e.keyCode == 13)
+                    ViewModel.clickSearch();
+            });
+            map = new GMaps({
+                div: '#h_map',
+                lat: 25.169712,
+                lng: 121.440934,
+                zoom: 16,
+                zoomControl: true,
+                panControl: false,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                overviewMapControl: false,
+                mapTypeId: 'roadmap',
+                click: function (e) {
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    console.log(e);
+                    /*mark = map.addMarker({
+                     lat: e.latLng.lat(),
+                     lng: e.latLng.lng(),
+                     title: 'Lima',
+                     })
+                     marks[marks.length] = mark;*/
+
+                    //$("#geo").val(e.latLng.lat() + " , " + e.latLng.lng());
+                    //$("#geo_lat").val(e.latLng.lat());
+                    //$("#geo_lng").val(e.latLng.lng());
+
+                    var geocoder = new google.maps.Geocoder();
+                    var coord = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+                    geocoder.geocode({'latLng': coord}, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            setMarkNData(e.latLng.lat(), e.latLng.lng(), results[0].place_id);
+                        }
+                    });
+
+                },
+            });
+            // search
+            $("#search").autocomplete({
+                //source: "{% url "search_map_place" %}",
+                maxLength: 10,
+                source: function (request, response) {
+                    list_data = []
+                    lm_success = function (data, status) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            d = data[i];
+                            list_data[list_data.length] = d;
+                        }
+
+                        response(list_data, status);
+                    }
+
+                    // lm ajax
+                    $.getJSON("{% url "search_map_place" %}", {
+                        term: request.term
+                    }, lm_success);
+
+                },
+                change: function (event, ui) {
+                    ViewModel.search.term = $("#search").val();
+                },
+                focus: function (event, ui) {
+
+                    $("#search").val(ui.item.name);
+                    return false;
+                },
+                select: function (event, ui) {
+                    ViewModel.search.term = ui.item.name;
+                    ViewModel.clickSearch();
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                console.log(item)
+                return $("<li>")
+                    .append("<div><b>" + item.name + "</b><br><small>" + 123 + "</small></div>")
+                    .appendTo(ul);
+            };
+        });
+
+        var ViewModel = new function () {
+            self = this;
+
+            this.photo_places = ko.observableArray([]);
+
+            this.listItems = ko.observableArray([]);
+            this.showListElement = function (elem) {
+                //if (elem.nodeType === 1) $(elem).hide().fadeIn();
+                if (elem.nodeType === 1) $(elem).show();
+            }
+            this.hideListElement = function (elem) {
+                /*if (elem.nodeType === 1) $(elem).slideUp(function () {
+                 $(elem).remove();
+                 })*/
+                $(elem).hide();
+                $(elem).remove();
+            }
+
+            this.search = {
+                term: "",
+                totalPages: ko.observable(0),
+                page: ko.observable(0)
+            }
+
+            this.detail = {
+                map_count: ko.observable(0),
+                place_count: ko.observable(0)
+            }
+
+            // list
+            $.getJSON("{% url "init_recommend_list" %}"
+                , function (data, status) {
+                    ViewModel.search.totalPages(data.totalPages * 1);
+                    ViewModel.search.page(data.page * 1);
+
+                    list = ViewModel.listItems;
+                    console.log(data);
+                    for (i in data.result) {
+                        list.push(ko.mapping.fromJS(data.result[i]));
+                    }
+                });
+            // detail
+            $.getJSON("{% url "get_index_detail" %}"
+                , function (data, status) {
+                    console.log(data);
+                    ViewModel.detail.map_count(data.map_count * 1)
+                    ViewModel.detail.place_count(data.place_count * 1);
+
+                    var image_preload = [];
+                    for (i in data.place_photo) {
+                        ViewModel.photo_places.push(data.place_photo[i]);
+                        image_preload.push(data.place_photo[i].photos[0].image_url);
+                    }
+
+                    preloadImages(image_preload);
+
+                    self.changeCoverPhoto();
+                    window.setInterval(self.changeCoverPhoto, 10000);
+                }
+            );
+
+            this.clickListMore = function () {
+                $.getJSON("{% url "search_map_place_list" %}", {
+                    term: self.search.term,
+                    page: self.search.page() + 1
+                }, function (data, status) {
+                    ViewModel.search.totalPages(data.totalPages * 1);
+                    ViewModel.search.page(data.page * 1);
+
+                    list = ViewModel.listItems;
+                    //list([]);
+                    for (i in data.result) {
+                        list.push(ko.mapping.fromJS(data.result[i]));
+                    }
+                });
+            }
+
+            this.hideMoreBtn = ko.pureComputed(function () {
+                return self.search.page() != self.search.totalPages();
+            }, this);
+
+            this.clickSearch = function () {
+                ViewModel.search.term = $("#search").val()
+                ViewModel.search.totalPages(0);
+                ViewModel.search.page(0);
+
+                $.getJSON("{% url "search_map_place_list" %}", {
+                    term: ViewModel.search.term
+                }, function (data, status) {
+                    ViewModel.search.totalPages(data.totalPages * 1);
+                    ViewModel.search.page(data.page * 1);
+
+                    list = ViewModel.listItems;
+                    list([]);
+                    for (i in data.result) {
+                        list.push(ko.mapping.fromJS(data.result[i]));
+                    }
+                });
+            }
+
+            this.coverIndex = 0
+            this.changeCoverPhoto = function () {
+
+                if (self.photo_places().length <= self.coverIndex)
+                    self.coverIndex = 0;
+
+                // background preload
+                var img = new Image();
+                var photoObj = self.photo_places()[self.coverIndex];
+                img.onload = function () {
+                    $('#home').css("background-image", "url(" + img.src + ")");
+                    $('#cover_photo').css("background-image", "url(" + photoObj.map_image.image_url + ")");
+                    self.coverIndex++;
+                }
+                img.src = photoObj.photos[0].image_url + "?width=1280&height=653";
+
+            }
+
+        }
+        ();
+        ko.applyBindings(ViewModel);
+
+        var clickRating = function (model, url) {
+            $.getJSON(url, {}, function (data, status) {
+                if (data.success == true && data.auth == true) {
+                    model(model() + 1);
+                }
+            });
+        }
+
         function w3_open() {
             if (mySidebar.style.display === 'block') {
                 mySidebar.style.display = 'none';
@@ -274,5 +562,26 @@
         function w3_close() {
             mySidebar.style.display = "none";
         }
+
+        function preloadImages(array) {
+            if (!preloadImages.list) {
+                preloadImages.list = [];
+            }
+            var list = preloadImages.list;
+            for (var i = 0; i < array.length; i++) {
+                var img = new Image();
+                img.onload = function () {
+                    var index = list.indexOf(this);
+                    if (index !== -1) {
+                        // remove image from the array once it's loaded
+                        // for memory consumption reasons
+                        list.splice(index, 1);
+                    }
+                }
+                list.push(img);
+                img.src = array[i];
+            }
+        }
+
     </script>
 {% endblock %}

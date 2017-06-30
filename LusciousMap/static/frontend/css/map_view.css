@@ -1,0 +1,15 @@
+.detail-item {
+
+}
+
+.detail-item:hover {
+    background-color: #ABD0CE;
+}
+
+/*
+img {
+    max-height: 240px;
+    myimg: expression(onload=function(){
+this.style.width=(this.offsetHeight > 240)?"240px":"auto"});
+}
+*/

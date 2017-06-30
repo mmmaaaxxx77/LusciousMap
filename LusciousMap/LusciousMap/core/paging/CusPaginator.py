@@ -6,6 +6,24 @@ from django.http import JsonResponse
 __author__ = 'johnnytsai'
 
 
+def setUpPagingObjectsJson(objects, page, size, **dic):
+
+    # paging
+    paginator = Paginator(objects, size)
+    try:
+        objects = paginator.page(page)
+    except PageNotAnInteger:
+        objects = paginator.page(1)
+        page = 1
+    except EmptyPage:
+        objects = paginator.page(paginator.num_pages)
+        page = paginator.num_pages
+
+    data = [ob for ob in objects.object_list]
+
+    return dict(result=data, page=page, totalPages=paginator.num_pages, totalResults=paginator.count)
+
+
 def setUpPagingObjects(objects, page, size, **dic):
 
     # paging

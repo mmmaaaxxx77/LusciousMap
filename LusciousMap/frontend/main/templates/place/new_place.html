@@ -4,76 +4,108 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-    <link rel="stylesheet" href="{% static "css/new_place.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/new_place.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/tag/jquery.tag-editor.css" %}">
+
+    <style>
+        .ui-autocomplete {
+            max-height: 300px;
+            overflow-y: auto; /* prevent horizontal scrollbar */
+            overflow-x: hidden; /* add padding to account for vertical scrollbar */
+            z-index: 1000 !important;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
 
-    <div class="w3-container" style="padding:128px 16px" id="home">
+    <div class="w3-container" style="padding:80px 16px" id="home">
         <h3 class="w3-center">分享好食</h3>
-        <p class="w3-center w3-large">若Google Map尚未新增此店家，我們會協助通報，標點完成需等待Google Map審核喔，不會馬上出現。</p>
-        <p class="w3-center w3-large">您尚未登入，登入新增店家會一並增加在您的好食列表喔。</p>
+        {% if user.is_authenticated %}
+            <p class="w3-center w3-large">新增店家會一並增加在您的好食店家列表。</p>
+            <p class="w3-center w3-large">若Google Map尚未新增此店家，我們會協助通報喔。</p>
+        {% else %}
+            <p class="w3-center w3-large">您尚未登入，登入新增店家，其他人可立即在好食地圖搜尋到您新增的地點，</p>
+            <p class="w3-center w3-large">並增加在您的好食店家列表喔。</p>
+            <p class="w3-center w3-large">若Google Map尚未新增此店家，我們會協助通報喔。</p>
+        {% endif %}
         <div class="w3-row-padding" style="margin-top:10px">
             <div class="w3-half">
                 <p>
                 <div class="container-4" style="margin: 0 auto">
-                    <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
+                    <input type="search" id="search" placeholder="搜尋地區或地點 ..."/>
                     <button class="icon"><i class="fa fa-search"></i></button>
                 </div>
                 </p>
                 <div id="map" class="" style="width:100%; min-height: 500px;"></div>
             </div>
             <div class="w3-half" id="new">
-                <form action="/action_page.php" target="_blank">
+                <form id="new_place_form" action="{% url "edit_new_place" %}" method="post" accept-charset="UTF-8"
+                      enctype="multipart/form-data">
+                    <!--
+                        <p>
+                            座標 ( 點選地圖或搜尋地點 )
+                            <input class="w3-input w3-border" type="text" placeholder="" required="required" id="geo"
+                                   name="geo" readonly>
+                        </p>
+                    -->
                     <p>
                         名稱 (*)
-                        <input class="w3-input w3-border" type="text" placeholder="Name" required="" name="Name">
+                        <input class="w3-input w3-border" type="text" placeholder="名稱" required="required" name="name">
                     </p>
                     <p>
                         類型 (*) - 預設『小吃』
-                        <select class="w3-input w3-border form-select">
-                            <option value="volvo">小吃</option>
-                            <option value="saab">店家</option>
-                            <option value="opel">餐廳</option>
+                        <select class="w3-input w3-border form-select" name="type">
+                            {% for type in form_options.types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                            {% endfor %}
                         </select>
                     </p>
                     <p>
                         國家 (*) - 預設『台灣』
-                        <select class="w3-input w3-border form-select">
-                            <option value="volvo">台灣</option>
-                            <option value="saab">日本</option>
-                            <option value="opel">韓國</option>
-                            <option value="audi">新加坡</option>
+                        <select class="w3-input w3-border form-select" name="country">
+                            {% for country in form_options.countries %}
+                                <option value="{{ country.id }}">{{ country.long_name }}</option>
+                            {% endfor %}
                         </select>
                     </p>
+                    {% comment %}
                     <p>
                         地區
-                        <select class="w3-input w3-border form-select">
+                        <select class="w3-input w3-border form-select" name="city">
                             <option value="null">---</option>
-                            <option value="volvo">台北市</option>
-                            <option value="saab">新北市</option>
-                            <option value="opel">高雄市</option>
-                            <option value="audi">台南市</option>
+                            {% for city in form_options.cities %}
+                                <option value="{{ city.id }}">{{ city.long_name }}</option>
+                            {% endfor %}
                         </select>
                     </p>
                     <p>
                         景點
-                        <select class="w3-input w3-border form-select">
+                        <select class="w3-input w3-border form-select" name="attraction">
                             <option value="null">---</option>
-                            <option value="volvo">士林夜市</option>
-                            <option value="saab">晴光市場</option>
-                            <option value="opel">西門町</option>
-                            <option value="audi">東區</option>
+                            {% for attraction in form_options.attractions %}
+                                <option value="{{ attraction.id }}">{{ attraction.long_name }}</option>
+                            {% endfor %}
                         </select>
                     </p>
+                    {% endcomment %}
                     <p>
                         敘述
-                        <textarea class="w3-input w3-border" cols="5"></textarea>
+                        <textarea class="w3-input w3-border" cols="5" name="description"></textarea>
+                    </p>
+                    <p>
+                        Tags
+                        <textarea id="v_tags" class="w3-input w3-border" rows="1"></textarea>
                     </p>
                     <p>
                         照片
-                        <input class="w3-input w3-border" type="file">
+                        <input class="w3-input w3-border" type="file" name="picture">
                     </p>
+                    <input type="hidden" id="tags" name="tags">
+                    <input type="hidden" id="geo_lat" name="geo_lat">
+                    <input type="hidden" id="geo_lng" name="geo_lng">
+                    <input type="hidden" id="place_id" name="place_id">
+                    {% csrf_token %}
                     <p>
                         <button class="w3-button w3-black w3-hover-grey" type="submit">
                             <i class="fa fa-paper-plane"></i>&nbsp&nbsp新增
@@ -84,15 +116,39 @@
         </div>
     </div>
 
-{% include '_footer.html' %}
+    {% include '_footer.html' %}
 {% endblock %}
 
 {% block script %}
-    <script type="text/javascript" src="{% static "plugins/gmaps.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.caret.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.tag-editor.min.js" %}"></script>
     <script>
+
         var map;
         var marks = [];
         $(document).ready(function () {
+
+            $("#new_place_form").submit(function (event) {
+                if($("#place_id").val() == ""){
+                    alert("您尚未在地圖上設定地點喔！");
+                    return false;
+                }
+                return true;
+            });
+
+            // tags
+            $('#v_tags').tagEditor({
+                placeholder: '輸入標籤 ... 如: 士林夜市,東區,新崛江',
+                autocomplete: {'source': '{% url "search_tag" %}', minLength: 2},
+                onChange: function (field, editor, tags) {
+                    $("#tags").val(tags.join(","));
+                }
+            });
+
+
+            // map
+
             map = new GMaps({
                 div: '#map',
                 lat: 25.169712,
@@ -109,50 +165,22 @@
                     map.removeMarkers();
                     map.hideInfoWindows();
                     console.log(e);
-                    var infoWindow = new google.maps.InfoWindow({
-                        content: '<p>HTML Content</p>'
-                    });
-                    mark = map.addMarker({
-                        lat: e.latLng.lat(),
-                        lng: e.latLng.lng(),
-                        title: 'Lima',
-                        infoWindow: infoWindow,
-                    })
-                    marks[marks.length] = mark;
-                    //setTimeout(function(){mark.setAnimation(null)}, 200);
-                    console.log(mark);
-                    infoWindow.open(map, mark);
+                    /*mark = map.addMarker({
+                     lat: e.latLng.lat(),
+                     lng: e.latLng.lng(),
+                     title: 'Lima',
+                     })
+                     marks[marks.length] = mark;*/
 
+                    //$("#geo").val(e.latLng.lat() + " , " + e.latLng.lng());
+                    //$("#geo_lat").val(e.latLng.lat());
+                    //$("#geo_lng").val(e.latLng.lng());
 
-                    GMaps.geocode({
-                        address: e.latLng.lat() + "," + e.latLng.lng(),
-                        callback: function (results, status) {
-                            console.log(results);
-                            console.log(status);
-                            if (status == 'OK') {
-                                place_id = results[0].place_id;
-                                if (e.placeId != null) {
-                                    place_id = e.placeId;
-                                    console.log(place_id);
-                                    console.log(e.infoWindow);
-                                }
-
-                                var request = {
-                                    placeId: place_id
-                                };
-                                callback = function (place, status) {
-                                    console.log(place);
-                                    console.log(status);
-                                    if (place.photos != null) {
-                                        console.log(place.photos[0].getUrl({
-                                            maxWidth: 640
-                                        }));
-                                    }
-                                }
-                                service = new google.maps.places.PlacesService(map.map);
-                                service.getDetails(request, callback);
-
-                            }
+                    var geocoder = new google.maps.Geocoder();
+                    var coord = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+                    geocoder.geocode({'latLng': coord}, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            setMarkNData(e.latLng.lat(), e.latLng.lng(), results[0].place_id);
                         }
                     });
 
@@ -165,10 +193,10 @@
                     map.setCenter(position.coords.latitude, position.coords.longitude);
                 },
                 error: function (error) {
-                    alert('Geolocation failed: ' + error.message);
+                    console.error('Geolocation failed: ' + error.message);
                 },
                 not_supported: function () {
-                    alert("Your browser does not support geolocation");
+                    console.warn("Your browser does not support geolocation");
                 },
                 always: function () {
                     //alert("Done!");
@@ -176,6 +204,117 @@
             });
 
         });
+
+        // search
+        $("#search").autocomplete({
+            //source: "{% url "search_place" %}",
+            maxLength: 10,
+            source: function (request, response) {
+
+                service = new google.maps.places.PlacesService(map.map);
+
+                google_success = function (results, status) {
+
+                    list_data = []
+
+                    for (var i = 0; i < results.length; i++) {
+                        name = results[i].name;
+                        address = results[i].formatted_address;
+                        if (results[i].name.length <= 0) {
+                            name = address;
+                            address = "";
+                        }
+
+                        d = {
+                            long_name: name,
+                            address: address,
+                            place_id: results[i].place_id,
+                            geo_lat: results[i].geometry.location.lat(),
+                            geo_lng: results[i].geometry.location.lng(),
+                        }
+
+                        list_data[list_data.length] = d;
+                    }
+
+                    lm_success = function (data, status) {
+
+                        for (var i = 0; i < data.length; i++) {
+                            d = data[i];
+                            //d.place_id = null;
+                            //d.address = ""
+                            list_data[list_data.length] = d;
+                        }
+
+                        response(list_data, status);
+                    }
+
+                    // lm ajax
+                    $.getJSON("{% url "search_place" %}", {
+                        term: request.term
+                    }, lm_success);
+
+                }
+
+                service.textSearch({"query": request.term}, google_success);
+
+
+            },
+            focus: function (event, ui) {
+
+                $("#search").val(ui.item.long_name);
+
+                map.removeMarkers();
+                map.hideInfoWindows();
+                mark = map.addMarker({
+                    lat: ui.item.geo_lat,
+                    lng: ui.item.geo_lng,
+                    title: 'Lima',
+                });
+                map.setCenter(ui.item.geo_lat, ui.item.geo_lng);
+                // marks[marks.length] = mark;
+                return false;
+            },
+            select: function (event, ui) {
+                map.removeMarkers();
+                map.hideInfoWindows();
+                console.log(ui.item);
+                if (ui.item.place_id == null) {
+                    var geocoder = new google.maps.Geocoder();
+                    var coord = new google.maps.LatLng(ui.item.geo_lat, ui.item.geo_lng);
+                    geocoder.geocode({'latLng': coord}, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            console.log(results);
+                            ui.item.place_id = results[0].place_id;
+                            setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
+                        }
+                    });
+                } else {
+                    setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
+                }
+                return false;
+            }
+        }).autocomplete("instance")._renderItem = function (ul, item) {
+            console.log(item)
+            return $("<li>")
+                .append("<div><b>" + item.long_name + "</b><br><small>" + item.address + "</small></div>")
+                .appendTo(ul);
+        };
+
+
+        function setMarkNData(lat, lng, place_id) {
+            mark = map.addMarker({
+                lat: lat,
+                lng: lng,
+                title: 'Lima',
+            });
+            map.setCenter(lat, lng);
+
+            $("#geo").val(lat + " , " + lng);
+            $("#geo_lat").val(lat);
+            $("#geo_lng").val(lng);
+            $("#place_id").val(place_id);
+        }
+
 
         function w3_open() {
             if (mySidebar.style.display === 'block') {

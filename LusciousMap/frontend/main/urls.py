@@ -16,10 +16,18 @@ Including another URLconf
 from django.conf.urls import url
 
 from frontend.main.views import views
+from frontend.main.views import webplugin
 
 urlpatterns = [
     url(r'^$', views.index, name="index"),
     url(r'^place/new/$', views.new_place, name="new_place"),
-    url(r'^map/view/$', views.map_view, name="map_view"),
+    url(r'^place/view/(?P<place_id>[\w\-]+)/$', views.place_view, name="place_view"),
+    url(r'^map/place/view/(?P<place_id>[\w\-]+)/$', views.map_place_view, name="map_place_view"),
+    url(r'^map/view/(?P<map_id>[\w\-]+)/$', views.map_view, name="map_view"),
     url(r'^map/edit/$', views.map_edit, name="map_edit"),
+    url(r'^photo/(?P<image_id>[\w\-]+)/$', views.get_photo, name="get_photo"),
+    url(r'^index/detail/$', views.get_index_detail, name="get_index_detail"),
+    # webplugin
+    url(r'^webplugin/map/(?P<map_id>[\w\-]+)/$', webplugin.map, name="webplugin_map"),
+    url(r'^webplugin/place/(?P<place_id>[\w\-]+)/$', webplugin.place, name="webplugin_place"),
 ]

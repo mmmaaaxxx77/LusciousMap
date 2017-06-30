@@ -4,16 +4,19 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-    <link rel="stylesheet" href="{% static "css/map_edit.css" %}">
-    <link rel="stylesheet" href="{% static "plugins/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/map_edit.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/tag/jquery.tag-editor.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
 {% endblock %}
 
 {% block body %}
 
-    <div class="w3-container" style="padding:41px 16px" id="home">
+    <div class="w3-container" style="padding:31px 16px" id="home">
     </div>
-    <div style="height: calc(100% - 84px);">
-        <div class="w3-col s3 w3-white">
+    <div style="height: calc(100% - 63px);">
+        <div class="w3-col s3 w3-white" style="overflow: scroll;height: calc(100%);border-right: 1px solid #ABD0CE;"
+             id="content-left">
             <div class="w3-center" style="border-bottom: 1px solid #ABD0CE;">
                 <button id="btn_my_food" class="w3-bar-item w3-button edit-menu-btn edit-menu-btn-active"
                         onclick="open_food()"><i class="icon-food"></i> &nbsp我的店家
@@ -27,66 +30,143 @@
             </div>
             <!-- 店家detail -->
             <div id="food_deatil" style="display: none;">
-                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
+                {# slide #}
+                <div id="carousel-example-generic" class="carousel1 carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox" style="background: #000;">
+                        <!-- ko template: {foreach: my_place_detail.place.photos} -->
+                        <!-- ko if: $index() == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: $index() != 0 -->
+                        <div class="item" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: $root.my_place_detail.place.photos().length == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:my_place_detail.place.place_image.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                    </a>
+                </div>
+                {# slide end #}
                 <div class="w3-container">
+                    <!-- ko if: lastMap.last.name() != "" -->
                     <p>
-                        <button onclick="open_map_detail()" class="w3-button w3-light-grey w3-block"><i
-                                class="fa fa-reply"></i> 淡水超好吃小吃
+                        <button class="w3-button w3-light-grey w3-block"
+                                data-bind="click:function(){ViewModel.backToLastMap()}">
+                            <i class="fa fa-reply"></i> <span data-bind="text:lastMap.last.name"></span>
                         </button>
                     </p>
-                    <h4><i class="icon-food"></i>&nbsp&nbsp斜坡淡水阿給</h4>
-                    <span class="card-info-msg">想食&nbsp</span>
-                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
-                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
-                    <p>超級推薦這間的阿給，好吃！</p>
+                    <!-- /ko -->
+                    <h4>
+                        <i class="icon-food"></i>&nbsp&nbsp<span data-bind="text:my_place_detail.place.name"></span>
+                        &nbsp
+                        <span style="font-size: 0.5em;">
+                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() == 2, click:my_place_detail.open_edit"><i
+                                    class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp加入我的地圖</span>
+                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() != 2, click:my_place_detail.open_edit"><i
+                                    class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp編輯</span>
+                            <span data-bind="visible: infoWindow.state() != 2">|</span>
+                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() != 2"><i class="fa fa-times"
+                                                                   aria-hidden="true"></i>&nbsp刪除</span>
+                        </span>
+                    </h4>
+                    <p data-bind="text:my_place_detail.place.description"></p>
                 </div>
             </div>
             <!-- 店家detail end -->
 
             <!-- 我的地圖detail -->
             <div id="s_map_detail" style="display: none;">
-                <img src="{% static "img/bg1.jpg" %}" alt="John" style="width:100%">
-                <div class="w3-container" id="map_deatil">
-                    <h4><i class="fa fa-map-o"></i>&nbsp&nbsp淡水超好吃小吃
-                        <small style="color: #999">(22)</small>
-                    </h4>
-                    <span class="card-info-msg">想食&nbsp</span>
-                    <span><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
-                            class="fa fa-star-o"></i><i class="fa fa-star-o"></i></span>
-                    <p>我的淡水私房美食！</p>
+                {# slide #}
+                <div id="carousel-example-generic2" class="carousel2 carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox" style="background: #000;">
+                        <!-- ko template: {foreach: my_map_detail.map.photos} -->
+                        <!-- ko if: $index() == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: $index() != 0 -->
+                        <div class="item" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: $root.my_map_detail.map.photos().length == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:my_map_detail.map.map_image.image_url}">
+                            <div class="carousel-caption">
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic2" role="button" data-slide="prev">
+                        <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic2" role="button" data-slide="next">
+                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                    </a>
                 </div>
-                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
-                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 蔥油餅
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 石頭餅
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 烤鳥蛋
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 超好吃超貴咖哩
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 可麗餅
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 一口煎餃
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 印度料理
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 烤魷魚
+                {# slide end #}
+                <div class="w3-container" id="map_deatil">
+                    <h4><i class="fa fa-map-o"></i>&nbsp&nbsp
+                        <span data-bind="text:my_map_detail.map.name"></span>
+                        <small style="color: #999">(<span data-bind="text:my_map_detail.map.places().length"></span>)
+                        </small>
+                        <span style="font-size: 0.5em;" data-bind="visible: infoWindow.state() != 2">
+                            <span class="card-info-msg pointer" data-bind="click:my_map_detail.edit"><i
+                                    class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp編輯</span> |
+                            <span class="card-info-msg pointer"><i class="fa fa-times"
+                                                                   aria-hidden="true"></i>&nbsp刪除</span>
+                        </span>
+                    </h4>
+                    <p data-bind="text: my_map_detail.map.description">我的淡水私房美食！</p>
+                </div>
+                <div class="w3-container" data-bind="if: isMpaDetailPlaceZero">目前尚無任何店家，請在地圖上新增喔！</div>
+                <ul class="w3-ul w3-white" style="height: calc(100%);overflow: auto;cursor: pointer;"
+                    data-bind="template: {foreach: my_map_detail.map.places}">
+                    <li class="w3-padding-10 detail-item"
+                        data-bind="click:function(){ViewModel.my_place_detail.init($data.json_url())}">
+                        <div class="detail-item-left">
+                            <small><i class="icon-food"></i></small>
+                            &nbsp
+                            <span data-bind="text:name"></span>
+                        </div>
+                        <div class="detail-item-right">
+                            <small>
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </small>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -94,7 +174,23 @@
 
             <!-- 我的店家 -->
             <div id="food">
-                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
+                <ul class="w3-ul w3-white" style="cursor: pointer;"
+                    data-bind="template: {foreach: my_places.places}">
+                    <li class="w3-padding-10 detail-item"
+                        data-bind="click:function(){ViewModel.my_place_detail.init($data.json_url())}">
+                        <div class="detail-item-left">
+                            <small><i class="icon-food"></i></small>
+                            &nbsp
+                            <span data-bind="text:name"></span>
+                        </div>
+                        <div class="detail-item-right">
+                            <small>
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </small>
+                        </div>
+                    </li>
+                    {% comment %}
                     <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
                         <small><i class="icon-food"></i></small>
                         &nbsp<b>5星</b> 蔥油餅
@@ -127,16 +223,80 @@
                         <small><i class="icon-food"></i></small>
                         &nbsp<b>5星</b> 烤魷魚
                     </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 石頭餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤鳥蛋
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 超好吃超貴咖哩
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 可麗餅
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 一口煎餃
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 印度料理
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤魷魚
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 一口煎餃
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 印度料理
+                    </li>
+                    <li class="w3-padding-10 detail-item">
+                        <small><i class="icon-food"></i></small>
+                        &nbsp<b>5星</b> 烤魷魚
+                    </li>
+                    {% endcomment %}
                 </ul>
             </div>
             <!-- 我的店家 end -->
             <!-- 我的地圖 -->
             <div id="s_map" style="display: none;">
-                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
-                    <li class="w3-padding-10 detail-item" onclick="open_map_detail()"
-                    ">
-                    <small><i class="fa fa-map-o"></i></small>
-                    &nbsp<b>5星</b> 蔥油餅</li>
+                <div class="w3-container">
+                    <p>
+                        <button class="w3-button w3-light-grey w3-block" onclick="open_edit_map()">
+                            <i class="fa fa-plus"></i> 新增地圖
+                        </button>
+                    </p>
+                </div>
+                <ul class="w3-ul w3-white" style="cursor: pointer;"
+                    data-bind="template: {foreach: my_maps.maps}">
+                    <li class="w3-padding-10 detail-item"
+                        data-bind="click:function(){ViewModel.my_map_detail.init($data.json_url())}">
+                        <div class="detail-item-left">
+                            <small><i class="fa fa-map-o"></i></small>
+                            &nbsp
+                            <span data-bind="text:name"></span>
+                        </div>
+                        <div class="detail-item-right">
+                            <small>
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </small>
+                        </div>
+                    </li>
+                    {% comment %}
+                    <li class="w3-padding-10 detail-item" onclick="open_map_detail()">
+                        <small><i class="fa fa-map-o"></i></small>
+                        &nbsp<b>5星</b> 蔥油餅
+                    </li>
                     <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
                         <small><i class="fa fa-map-o"></i></small>
                         &nbsp<b>5星</b> 石頭餅
@@ -165,37 +325,29 @@
                         <small><i class="fa fa-map-o"></i></small>
                         &nbsp<b>5星</b> 烤魷魚
                     </li>
+                    {% endcomment %}
                 </ul>
             </div>
             <!-- 我的地圖 end -->
 
             <!-- 我的追蹤 -->
             <div id="my_follow" style="display: none;">
-                <ul class="w3-ul w3-white" style="height: 180px;overflow: auto;cursor: pointer;">
-                    <li class="w3-padding-10 detail-item" onclick="open_map_detail()">
-                        <small><i class="fa fa-map-o"></i></small>
-                        &nbsp<b>5星</b> 士林超好吃小吃
-                        <small class="sub-author">mmmaaaxxx77</small>
-                    </li>
-                    <li class="w3-padding-10 detail-item" onclick="open_food_detail()">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 石頭餅
-                        <small class="sub-author">mmmaaaxxx77</small>
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 烤鳥蛋
-                        <small class="sub-author">rainie</small>
-                    </li>
-                    <li class="w3-padding-10 detail-item" onclick="detail_click()">
-                        <small><i class="fa fa-map-o"></i></small>
-                        &nbsp<b>5星</b> 台大好吃小吃
-                        <small class="sub-author">gina</small>
-                    </li>
-                    <li class="w3-padding-10 detail-item">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp<b>5星</b> 超好吃超貴咖哩
-                        <small class="sub-author">sonia77</small>
+                <ul class="w3-ul w3-white" style="cursor: pointer;"
+                    data-bind="template: {foreach: my_follows.follows}">
+                    <li class="w3-padding-10 detail-item"
+                        data-bind="click:function(){ViewModel.my_map_detail.init($data.json_url())}">
+                        <div class="detail-item-left">
+                            <small><i class="fa fa-map-o"></i></small>
+                            &nbsp
+                            <span data-bind="text:name"></span>
+                            <small class="sub-author">(<span data-bind="text:user.username"></span>)</small>
+                        </div>
+                        <div class="detail-item-right">
+                            <small>
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </small>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -203,56 +355,575 @@
 
         </div>
         <div class="w3-col s9 w3-container" id="map" style="height: calc(100%);"></div>
+        <!-- 新增地圖 -->
+        <div class="w3-col s9 w3-container" id="edit_map" style="overflow: scroll;height: calc(100%);display: none;">
+            <div style="padding: 5%;">
+                <form id="save_map" action="{% url "save_map" %}" method="post" accept-charset="UTF-8"
+                      enctype="multipart/form-data">
+                    <div class="w3-container" id="map_deatil">
+                        <p>
+                            地圖名稱 (*)
+                            <input class="w3-input w3-border" type="text" placeholder="地圖名稱" required="required"
+                                   name="map_name" id="map_name">
+                        </p>
+                        <p>
+                            類型 (*) - 預設『小吃』
+                            <select class="w3-input w3-border form-select" name="map_type" id="map_type" t
+                                    data-bind="options: new_map.type_options, optionsText: 'name', optionsValue: 'id'">
+                            </select>
+                        </p>
+                        <p>
+                            國家 (*) - 預設『台灣』
+                            <select class="w3-input w3-border form-select" name="map_country" id="map_country"
+                                    data-bind="options: new_map.country_options, optionsText: 'long_name', optionsValue: 'id'">
+                            </select>
+                        </p>
+                        <p>
+                            Tags
+                            <textarea id="m_tags" class="w3-input w3-border" rows="1"></textarea>
+                        </p>
+                        <p>
+                            敘述
+                            <textarea class="w3-input w3-border" cols="5" name="map_description"
+                                      id="map_description"></textarea>
+                        </p>
+                        <p>
+                            照片
+                            <input class="w3-input w3-border" type="file" name="map_picture">
+                        </p>
+                        <input type="hidden" id="map_tags" name="map_tags">
+                        <input type="hidden" id="map_id" name="map_id">
+                        {% csrf_token %}
+                        <p style="text-align: right;">
+                            <button class="w3-button w3-black w3-hover-grey" type="submit">
+                                <i class="fa fa-paper-plane"></i>&nbsp&nbsp儲存
+                            </button>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- 新增地圖 end -->
     </div>
 
-    <div class="edit-right-side">
+    <div class="edit-right-side" id="search_div">
         <div class="container-4" style="margin: 0 auto">
             <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
             <button class="icon"><i class="fa fa-search"></i></button>
         </div>
     </div>
 
+    <!-- Knockout template -->
+    <script type="text/html" id="info-window-template">
+        <form id="place_form">
+            <div style="width:calc(50%);float:left;padding-right: 5px;">
+                <p>
+                    名稱 (*)
+                    <input class="w3-input w3-border" type="text" placeholder="Name" required="" name="name">
+                </p>
+
+                <!-- ko if: $data.infoWindow.state() == 1 || $data.infoWindow.state() == 2 -->
+                <p>
+                    地圖 (*) - 預設最近更新的地圖
+                    <select class="w3-input w3-border form-select" id="e_p_map" name="e_p_map"
+                            data-bind="options: $data.my_maps.maps, optionsText: 'name', optionsValue: 'id'">
+                    </select>
+                </p>
+                <!-- /ko -->
+                <p>
+                    類型 (*) - 預設『小吃』
+                    <select class="w3-input w3-border form-select" name="type"
+                            data-bind="options: new_map.type_options, optionsText: 'name', optionsValue: 'id'">
+                    </select>
+                </p>
+                <p>
+                    國家 (*) - 預設『台灣』
+                    <select class="w3-input w3-border form-select" name="country"
+                            data-bind="options: $data.new_map.country_options, optionsText: 'long_name', optionsValue: 'id'">
+                    </select>
+                </p>
+                <p>
+                    敘述
+                    <textarea class="w3-input w3-border" cols="5" name="description"></textarea>
+                </p>
+            </div>
+            <div style="width:calc(50%);float:left;padding-top: 3px;">
+                <p>
+                    Tags
+                    <textarea id="p_tags" class="w3-input w3-border" rows="1"></textarea>
+                </p>
+                <p>
+                    照片
+                    <input class="w3-input w3-border" type="file" name="picture">
+                </p>
+                <p style="text-align:right;">
+                    <button class="w3-button w3-black w3-hover-grey" id="place_form_submit" type="submit">
+                        <i class="fa fa-paper-plane"></i>&nbsp&nbsp儲存
+                    </button>
+                </p>
+            </div>
+            {% csrf_token %}
+            <input type="hidden" id="place_tags" name="tags">
+            <input type="hidden" id="place_geo_lat" name="geo_lat">
+            <input type="hidden" id="place_geo_lng" name="geo_lng">
+            <input type="hidden" id="g_place_id" name="edit_place_id">
+            <input type="hidden" id="e_place_id" name="place_id">
+            <input type="hidden" id="e_map_id" name="map_id">
+        </form>
+    </script>
 {% endblock %}
 
 {% block script %}
-    <script type="text/javascript" src="{% static "plugins/gmaps.js" %}"></script>
-    <script type="text/javascript" src="{% static "plugins/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.caret.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.tag-editor.min.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.form/4.2.1/jquery.form.min.js"
+            integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
     <script>
         var map;
         var marks = [];
+        var mark;
 
-        var infoHTML = '<p>名稱 (*)<input class="w3-input w3-border" type="text" placeholder="Name" required="" name="Name"></p><p>敘述<textarea class="w3-input w3-border" cols="5"></textarea></p><p>照片<input class="w3-input w3-border" type="file"></p><p><button class="w3-button w3-black w3-hover-grey" type="submit"><i class="fa fa-paper-plane"></i>&nbsp&nbsp新增</button></p>';
+        var ViewModel = new function () {
+            self = this;
 
-        $(document).ready(function () {
+            this.new_map = {
+                type_options: ko.observableArray([]),
+                country_options: ko.observableArray([]),
+                init: function () {
+                    if (ViewModel)
+                        ViewModel.new_map.clear();
+                    $.getJSON("{% url "save_map" %}",
+                        function (data, status) {
+                            self.new_map.type_options([]);
+                            self.new_map.country_options([]);
+                            for (d in data.types) {
+                                self.new_map.type_options.push(data.types[d])
+                            }
+                            for (d in data.countries) {
+                                self.new_map.country_options.push(data.countries[d])
+                            }
+                            // tags
+                            $('#m_tags').tagEditor('destroy');
+                            $('#m_tags').tagEditor({
+                                placeholder: '輸入標籤 ... 如: 士林夜市,東區,新崛江',
+                                autocomplete: {'source': '{% url "search_tag" %}', minLength: 2},
+                                onChange: function (field, editor, tags) {
+                                    $("#map_tags").val(tags.join(","));
+                                }
+                            });
+                        }
+                    );
+                },
+                clear: function () {
+                    $("#save_map")[0].reset();
+                    $('#m_tags').tagEditor('destroy');
+                }
+            };
+            self.new_map.init();
 
-            var availableTags = [
-                "ActionScript",
-                "AppleScript",
-                "Asp",
-                "BASIC",
-                "C",
-                "C++",
-                "Clojure",
-                "COBOL",
-                "ColdFusion",
-                "Erlang",
-                "Fortran",
-                "Groovy",
-                "Haskell",
-                "Java",
-                "JavaScript",
-                "Lisp",
-                "Perl",
-                "PHP",
-                "Python",
-                "Ruby",
-                "Scala",
-                "Scheme"
-            ];
-            $("#search").autocomplete({
-                source: availableTags
+            this.my_maps = {
+                maps: ko.observableArray([]),
+                init: function () {
+                    $.getJSON("{% url "list_map" %}",
+                        function (data, status) {
+                            self.my_maps.maps([]);
+                            for (i in data.maps) {
+                                self.my_maps.maps.push(ko.mapping.fromJS(data.maps[i]));
+                            }
+                        }
+                    );
+                }
+            }
+
+            this.my_maps.init();
+
+            this.my_places = {
+                places: ko.observableArray([]),
+                init: function () {
+                    $.getJSON("{% url "list_mapplace" %}",
+                        function (data, status) {
+                            self.my_places.places([]);
+                            for (i in data.places) {
+                                self.my_places.places.push(ko.mapping.fromJS(data.places[i]));
+                            }
+                        }
+                    );
+                }
+            }
+
+            this.my_places.init();
+
+            this.my_map_detail = {
+                map: {
+                    id: "",
+                    name: ko.observable(""),
+                    description: ko.observable(""),
+                    rating: {
+                        good: ko.observable(0),
+                        bad: ko.observable(0)
+                    },
+                    map_image: {
+                        image_url: ko.observable("")
+                    },
+                    countries: ko.observableArray([]),
+                    place_types: ko.observableArray([]),
+                    photos: ko.observableArray([]),
+                    places: ko.observableArray([]),
+                    tags: ko.observableArray([]),
+                    type: null,
+                    country: null,
+                },
+                init: function (url) {
+                    $.getJSON(url,
+                        function (data, status) {
+                            data = data.map;
+                            console.log(data);
+                            //kdata = ko.mapping.fromJS(data);
+                            model = ViewModel.my_map_detail.map;
+                            model.id = data.id;
+                            model.name(data.name);
+                            model.description(data.description);
+                            model.rating.good(data.rating.good);
+                            model.rating.bad(data.rating.bad);
+                            model.map_image.image_url(data.map_image.image_url);
+                            model.countries([]);
+                            model.country = data.country.id;
+                            for (i in data.countries) {
+                                model.countries.push(ko.mapping.fromJS(data.countries[i]));
+                            }
+                            model.place_types([]);
+                            model.type = data.type.id;
+                            for (i in data.place_types) {
+                                model.place_types.push(ko.mapping.fromJS(data.place_types[i]));
+                            }
+                            model.photos([]);
+                            for (i in data.photos) {
+                                model.photos.push(ko.mapping.fromJS(data.photos[i]));
+                            }
+                            model.places([]);
+                            for (i in data.places) {
+                                model.places.push(ko.mapping.fromJS(data.places[i]));
+                            }
+                            model.tags([]);
+                            for (i in data.tags) {
+                                model.tags.push(ko.mapping.fromJS(data.tags[i]));
+                            }
+                            open_map_detail();
+
+                            self.setMapMarks(data.places);
+                            self.clearLastMap();
+                            self.setLastMap(data.name, data.user, data.json_url, data.id);
+                        }
+                    );
+                },
+                edit: function () {
+                    open_edit_map();
+                    var model = ViewModel.my_map_detail.map;
+                    $("#save_map input[name=map_id]").val(model.id);
+                    $("#save_map input[name=map_name]").val(model.name());
+                    $("#save_map textarea[name=map_description]").text(model.description());
+                    $("#save_map input[name=map_type]").val(model.type);
+                    $("#save_map input[name=map_country]").val(model.country);
+                    // tags
+                    $('#m_tags').tagEditor({
+                        placeholder: '輸入標籤 ... 如: 士林夜市,東區,新崛江',
+                        autocomplete: {'source': '{% url "search_tag" %}', minLength: 2},
+                        onChange: function (field, editor, tags) {
+                            $("#map_tags").val(tags.join(","));
+                        }
+                    });
+                    console.log(model.tags());
+                    for (i in model.tags()) {
+                        $('#m_tags').tagEditor('addTag', model.tags()[i].name());
+                    }
+                }
+            }
+            this.isMpaDetailPlaceZero = ko.computed(function () {
+                return this.my_map_detail.map.places().length == 0;
+            }, this)
+
+            this.my_place_detail = {
+                place: {
+                    id: "",
+                    name: ko.observable(""),
+                    description: ko.observable(""),
+                    rating: {
+                        good: ko.observable(0),
+                        bad: ko.observable(0)
+                    },
+                    place_image: {
+                        image_url: ko.observable("")
+                    },
+                    photos: ko.observableArray([]),
+                    tags: ko.observableArray([]),
+                },
+                place_detail: null,
+                last_url:null,
+                refresh:function(){
+                    self.my_place_detail.init(self.my_place_detail.last_url);
+                },
+                init: function (url) {
+                    self.my_place_detail.last_url = url;
+                    $.getJSON(url,
+                        function (data, status) {
+                            data = data.place;
+                            ViewModel.my_place_detail.place_detail = data;
+                            console.log(data);
+                            model = ViewModel.my_place_detail.place;
+                            model.id = data.id;
+                            model.name(data.name);
+                            model.description(data.description);
+                            model.rating.good(data.rating.good);
+                            model.rating.bad(data.rating.bad);
+                            model.place_image.image_url(data.map_image.image_url);
+                            model.photos([]);
+                            for (i in data.photos) {
+                                model.photos.push(ko.mapping.fromJS(data.photos[i]));
+                            }
+                            model.tags([]);
+                            for (i in data.tags) {
+                                model.tags.push(ko.mapping.fromJS(data.tags[i]));
+                            }
+                            self.setPlaceMark(data.geo_lat, data.geo_lng)
+                            open_food_detail();
+                        });
+                    $('#content-left').animate({
+                        scrollTop: $('#content-left').offset().top - 63
+                    }, 'slow');
+                },
+                open_edit: function () {
+                    infoWindow.open(map, mark);
+                },
+                prepare: function () {
+                    $("#place_form input[name=name]").val(ViewModel.my_place_detail.place_detail.name);
+                    //$("#place_form input[name=e_p_map]").val(ViewModel.my_place_detail.place_detail);
+                    $("#place_form input[name=type]").val(ViewModel.my_place_detail.place_detail.place_type.id);
+                    $("#place_form input[name=country]").val(ViewModel.my_place_detail.place_detail.country.id);
+                    $("#place_form textarea[name=description]").text(ViewModel.my_place_detail.place_detail.description);
+                    $("#place_form input[name=edit_place_id]").val(ViewModel.my_place_detail.place_detail.id);
+                    if (ViewModel.lastMap.last.name() != "")
+                        $("#place_form input[name=map_id]").val(ViewModel.lastMap.last.id);
+                    // tags
+                    for (i in ViewModel.my_place_detail.place_detail.tags) {
+                        $('#p_tags').tagEditor('addTag', ViewModel.my_place_detail.place_detail.tags[i].name);
+                    }
+                }
+            }
+
+            this.my_follows = {
+                follows: ko.observableArray([]),
+                init: function () {
+                    $.getJSON("{% url "list_follows" %}",
+                        function (data, status) {
+                            self.my_follows.follows([]);
+                            for (i in data.follows) {
+                                self.my_follows.follows.push(ko.mapping.fromJS(data.follows[i]));
+                            }
+                        }
+                    );
+                }
+            }
+            self.my_follows.init();
+
+            this.setMapMarks = function (place_list) {
+                console.log(place_list);
+                map.removeMarkers();
+
+                if (place_list.length > 0) {
+                    map.setCenter(place_list[0].geo_lat, place_list[0].geo_lng);
+                    map.setZoom(13);
+                }
+
+                for (i in place_list) {
+                    html = '<p>' + place_list[i].name + '</p>';
+
+                    if (place_list[i].photos.length > 0) {
+                        var photo_url = place_list[i].photos[0].image_url;
+                        html += '<img src="' + photo_url + '" style="max-width:200px;">';
+                    }
+
+
+                    mark = map.addMarker({
+                        lat: place_list[i].geo_lat,
+                        lng: place_list[i].geo_lng,
+                        title: 'Lima',
+                        infoWindow: {
+                            content: html
+                        }
+                    });
+                }
+            };
+
+            this.setPlaceMark = function (geo_lat, geo_lng) {
+                map.removeMarkers();
+
+                map.setCenter(geo_lat, geo_lng);
+                map.setZoom(16);
+                mark = map.addMarker({
+                    lat: geo_lat,
+                    lng: geo_lng,
+                    title: 'Lima',
+                });
+            };
+
+            this.lastMap = {
+                last: {
+                    name: ko.observable(""),
+                    username: ko.observable(""),
+                    url: ko.observable(""),
+                    id: null,
+                }
+            };
+            this.clearLastMap = function () {
+                self.lastMap.last.name("");
+                self.lastMap.last.username("");
+                self.lastMap.last.url("");
+                self.lastMap.last.id = null;
+            };
+            this.setLastMap = function (name, user, url, id) {
+                self.lastMap.last.id = id;
+                self.lastMap.last.name(name);
+                self.lastMap.last.url(url);
+                if (user != null) {
+                    self.lastMap.last.username(user.username);
+                }
+            };
+            this.backToLastMap = function () {
+                ViewModel.my_map_detail.init(self.lastMap.last.url());
+
+            }
+
+            this.infoWindow = {
+                state: ko.observable(0), // 0:place, 1:map, 2:follow
+                place_id: null,
+                lat: null,
+                lng: null,
+            }
+            this.infoWindowAction = {
+                submit: function () {
+                    $("#place_form_submit").attr('disabled', true);
+                    if(self.search.search.place_id == null) {
+                        $("#place_form input[name=geo_lat]").val(self.infoWindow.lat);
+                        $("#place_form input[name=geo_lng]").val(self.infoWindow.lng);
+                        $("#place_form input[name=place_id]").val(self.infoWindow.place_id);
+                    }
+                    $("#place_form input[name=map_id]").val(null);
+                    if (self.infoWindow.state() == 1) {
+                        $("#place_form input[name=map_id]").val($("#e_p_map").val());
+                    }
+                    $("#place_form").ajaxSubmit({
+                        url: '{% url "save_map_mark" %}',
+                        type: 'post',
+                        success: function (data, status) {
+                            $("#place_form_submit").attr('disabled', false);
+                            if (data.success) {
+                                clearMarkNData();
+                                map.hideInfoWindows();
+                                $("#place_form")[0].reset();
+                                self.refresh_list();
+                                if(self.infoWindow.state() == 0 || self.infoWindow.state() == 2)
+                                    self.my_place_detail.refresh();
+                            }
+                            infoWindow.close();
+                        }
+                    });
+                }
+            }
+
+            this.refresh_list = function () {
+
+                if (self.lastMap.last.url() != "" || self.lastMap.last.url() != null) {
+                    self.my_map_detail.init(self.lastMap.last.url());
+                }
+                self.my_maps.init();
+                self.my_places.init();
+                self.my_follows.init();
+            }
+
+            this.search = {
+                search: {
+                    geo_lat: null,
+                    geo_lng: null,
+                    place_id: null,
+                },
+                init: function (geo_lat, geo_lng, place_id) {
+                    self.search.search.geo_lat = geo_lat;
+                    self.search.search.geo_lng = geo_lng;
+                    self.search.search.place_id = place_id;
+                },
+                clear: function () {
+                    self.search.search.geo_lat = null;
+                    self.search.search.geo_lng = null;
+                    self.search.search.place_id = null;
+                }
+            }
+
+        };
+
+        var infoWindowHTML =
+            '<div id="info-window" style="max-height:400px;"' +
+            'data-bind="template: { name: \'info-window-template\', data: self }">' +
+            '</div>';
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: infoWindowHTML
+        });
+        isInfoWindowLoaded = false
+        google.maps.event.addListener(infoWindow, 'domready', function () {
+            ko.cleanNode($("#info-window")[0]);
+            ko.applyBindings(self, $("#info-window")[0]);
+            // tags
+            $('#p_tags').tagEditor('destroy');
+            $('#p_tags').tagEditor({
+                placeholder: '輸入標籤 ... ',
+                autocomplete: {'source': '{% url "search_tag" %}', minLength: 2},
+                onChange: function (field, editor, tags) {
+                    $("#place_tags").val(tags.join(","));
+                }
             });
 
+            if (ViewModel.search.search.place_id != null) {
+                $("#place_form input[name=geo_lat]").val(ViewModel.search.search.geo_lat);
+                $("#place_form input[name=geo_lng]").val(ViewModel.search.search.geo_lng);
+                $("#place_form input[name=place_id]").val(ViewModel.search.search.place_id);
+            }
+
+            if (ViewModel.my_place_detail.place_detail != null) {
+                ViewModel.my_place_detail.prepare();
+            }
+
+            $("#place_form").submit(function (event) {
+                ViewModel.infoWindowAction.submit();
+                return false;
+            });
+        });
+
+        $(document).ready(function () {
+            ko.applyBindings(ViewModel);
+            $('.carousel').carousel();
+            //$('.carousel2').carousel();
+
+            $("#save_map").submit(function (event) {
+                $("#save_map").ajaxSubmit({
+                    url: '{% url "save_map" %}',
+                    type: 'post',
+                    success: function (data, status) {
+                        if (data.success) {
+                            ViewModel.new_map.clear();
+                            ViewModel.my_maps.init();
+                            open_google_map();
+                            ViewModel.refresh_list();
+                            ViewModel.my_map_detail.init(self.lastMap.last.url());
+                        }
+                    }
+                });
+                return false;
+            });
 
             map = new GMaps({
                 div: '#map',
@@ -269,62 +940,156 @@
                 streetViewControl: false,
                 overviewMapControl: false,
                 mapTypeId: 'roadmap',
+                styles: styles,
                 click: function (e) {
                     map.removeMarkers();
                     map.hideInfoWindows();
                     console.log(e);
-                    var infoWindow = new google.maps.InfoWindow({
-                        content: infoHTML
-                    });
                     mark = map.addMarker({
                         lat: e.latLng.lat(),
                         lng: e.latLng.lng(),
                         title: 'Lima',
                         infoWindow: infoWindow,
-                    })
+                        click: function (e) {
+                            infoWindow.open(map, mark);
+                        }
+                    });
                     marks[marks.length] = mark;
-                    //setTimeout(function(){mark.setAnimation(null)}, 200);
-                    console.log(mark);
                     infoWindow.open(map, mark);
 
 
-                    GMaps.geocode({
-                        address: e.latLng.lat() + "," + e.latLng.lng(),
-                        callback: function (results, status) {
-                            console.log(results);
-                            console.log(status);
-                            if (status == 'OK') {
-                                place_id = results[0].place_id;
-                                if (e.placeId != null) {
-                                    place_id = e.placeId;
-                                    console.log(place_id);
-                                    console.log(e.infoWindow);
-                                }
-
-                                var request = {
-                                    placeId: place_id
-                                };
-                                callback = function (place, status) {
-                                    console.log(place);
-                                    console.log(status);
-                                    if (place.photos != null) {
-                                        console.log(place.photos[0].getUrl({
-                                            maxWidth: 640
-                                        }));
-                                    }
-                                }
-                                service = new google.maps.places.PlacesService(map.map);
-                                service.getDetails(request, callback);
-
-                            }
+                    var geocoder = new google.maps.Geocoder();
+                    var coord = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
+                    geocoder.geocode({'latLng': coord}, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            setMarkNData(e.latLng.lat(), e.latLng.lng(), results[0].place_id);
                         }
                     });
 
                 },
             });
 
+            // search
+            $("#search").autocomplete({
+                //source: "{% url "search_place" %}",
+                maxLength: 10,
+                source: function (request, response) {
+
+                    service = new google.maps.places.PlacesService(map.map);
+
+                    google_success = function (results, status) {
+
+                        list_data = []
+
+                        for (var i = 0; i < results.length; i++) {
+                            name = results[i].name;
+                            address = results[i].formatted_address;
+                            if (results[i].name.length <= 0) {
+                                name = address;
+                                address = "";
+                            }
+
+                            d = {
+                                long_name: name,
+                                address: address,
+                                place_id: results[i].place_id,
+                                geo_lat: results[i].geometry.location.lat(),
+                                geo_lng: results[i].geometry.location.lng(),
+                            }
+
+                            list_data[list_data.length] = d;
+                        }
+
+                        lm_success = function (data, status) {
+
+                            for (var i = 0; i < data.length; i++) {
+                                d = data[i];
+                                //d.place_id = null;
+                                //d.address = ""
+                                list_data[list_data.length] = d;
+                            }
+
+                            response(list_data, status);
+                        }
+
+                        // lm ajax
+                        $.getJSON("{% url "search_place" %}", {
+                            term: request.term
+                        }, lm_success);
+
+                    }
+
+                    service.textSearch({"query": request.term}, google_success);
+
+
+                },
+                focus: function (event, ui) {
+
+                    $("#search").val(ui.item.long_name);
+
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    mark = map.addMarker({
+                        lat: ui.item.geo_lat,
+                        lng: ui.item.geo_lng,
+                        title: 'Lima',
+                    });
+                    map.setCenter(ui.item.geo_lat, ui.item.geo_lng);
+                    // marks[marks.length] = mark;
+                    return false;
+                },
+                select: function (event, ui) {
+                    map.removeMarkers();
+                    map.hideInfoWindows();
+                    console.log(ui.item);
+                    if (ui.item.place_id == null) {
+                        var geocoder = new google.maps.Geocoder();
+                        var coord = new google.maps.LatLng(ui.item.geo_lat, ui.item.geo_lng);
+                        geocoder.geocode({'latLng': coord}, function (results, status) {
+                            if (status === google.maps.GeocoderStatus.OK) {
+                                console.log(results);
+                                ui.item.place_id = results[0].place_id;
+                                setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
+                            }
+                        });
+                    } else {
+                        setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
+                    }
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                console.log(item)
+                return $("<li>")
+                    .append("<div><b>" + item.long_name + "</b><br><small>" + item.address + "</small></div>")
+                    .appendTo(ul);
+            };
+
+
+            function setMarkNData(lat, lng, place_id) {
+                mark = map.addMarker({
+                    lat: lat,
+                    lng: lng,
+                    title: 'Lima',
+                    infoWindow: infoWindow,
+                    click: function (e) {
+                        infoWindow.open(map, mark);
+                    }
+                });
+                ViewModel.search.init(lat, lng, place_id);
+                map.setCenter(lat, lng);
+            }
 
         });
+        var setMarkNData = function (lat, lng, place_id) {
+            ViewModel.infoWindow.place_id = place_id;
+            ViewModel.infoWindow.lat = lat;
+            ViewModel.infoWindow.lng = lng;
+        };
+        var clearMarkNData = function () {
+            ViewModel.infoWindow.place_id = null;
+            ViewModel.infoWindow.lat = null;
+            ViewModel.infoWindow.lng = null;
+        };
 
         function toggleTopBtn(id) {
             $(".edit-menu-btn").removeClass("edit-menu-btn-active");
@@ -337,7 +1102,13 @@
             $("#s_map").slideUp('slow');
             $("#s_map_detail").slideUp('slow');
             $("#my_follow").slideUp('slow');
+            //$("#edit_map").slideUp('slow');
             toggleTopBtn("btn_my_food");
+            open_google_map();
+            ViewModel.clearLastMap();
+            ViewModel.infoWindow.state(0);
+            ViewModel.my_place_detail.place_detail = null;
+            ViewModel.search.clear();
         }
 
         function open_map() {
@@ -346,7 +1117,17 @@
             $("#s_map").slideDown('slow');
             $("#s_map_detail").slideUp('slow');
             $("#my_follow").slideUp('slow');
+            //$("#edit_map").slideUp('slow');
             toggleTopBtn("btn_my_map");
+            open_google_map();
+            ViewModel.clearLastMap();
+            ViewModel.infoWindow.state(1);
+            ViewModel.my_place_detail.place_detail = null;
+            if ($("#place_form")[0] != null)
+                $("#place_form")[0].reset();
+            infoWindow.close();
+            map.removeMarkers();
+            ViewModel.search.clear();
         }
 
         function open_follow() {
@@ -355,12 +1136,24 @@
             $("#s_map").slideUp('slow');
             $("#s_map_detail").slideUp('slow');
             $("#my_follow").slideDown('slow');
+            //$("#edit_map").slideUp('slow');
             toggleTopBtn("btn_my_follow");
+            open_google_map();
+            ViewModel.clearLastMap();
+            ViewModel.infoWindow.state(2);
+            ViewModel.my_place_detail.place_detail = null;
+            if ($("#place_form")[0] != null)
+                $("#place_form")[0].reset();
+            infoWindow.close();
+            map.removeMarkers();
+            ViewModel.search.clear();
         }
 
         function open_food_detail() {
-            $("#food_deatil").slideDown("slow");
+            //$("#food_deatil").slideUp("slow");
             $("#s_map_detail").slideUp("slow");
+            $("#food_deatil").slideDown("slow");
+            ViewModel.search.clear();
         }
 
         function open_map_detail() {
@@ -369,6 +1162,32 @@
             $("#s_map").slideUp('slow');
             $("#my_follow").slideUp('slow');
             $("#food").slideUp('slow');
+            //$("#edit_map").slideUp('slow');
+            ViewModel.my_place_detail.place_detail = null;
+            if ($("#place_form")[0] != null)
+                $("#place_form")[0].reset();
+            infoWindow.close();
+            map.removeMarkers();
+            ViewModel.search.clear();
+        }
+
+        function open_edit_map() {
+            ViewModel.new_map.init();
+            $("#edit_map").show();
+            $("#map").hide();
+            $("#search_div").hide();
+            ViewModel.my_place_detail.place_detail = null;
+            if ($("#place_form")[0] != null)
+                $("#place_form")[0].reset();
+            infoWindow.close();
+            map.removeMarkers();
+            ViewModel.search.clear();
+        }
+
+        function open_google_map() {
+            $("#edit_map").hide();
+            $("#map").show();
+            $("#search_div").show();
         }
 
         function detail_click2() {
@@ -389,6 +1208,44 @@
             mySidebar.style.display = "none";
         }
 
+        styles = [
+            {
+                "featureType": "all",
+                "elementType": "labels.text",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "road.arterial",
+                "elementType": "labels.icon",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            },
+            {
+                "featureType": "transit",
+                "elementType": "all",
+                "stylers": [
+                    {
+                        "visibility": "on"
+                    }
+                ]
+            }
+        ]
 
     </script>
 {% endblock %}

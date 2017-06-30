@@ -26,4 +26,6 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     url(_(r''), include('frontend.main.urls')),
+    url(_(r''), include('frontend.map_basic.urls')),
+    url(_(r''), include('frontend.map_map.urls')),
 )
