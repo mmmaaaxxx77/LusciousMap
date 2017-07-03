@@ -64,22 +64,24 @@
                         <a target="_self" data-bind="attr: { href: url()}">
                         <span data-bind="if:model_type() == 'PLACE'"><i class="fa fa-map-marker card_icon"
                                                                         aria-hidden="true"></i></span>
-                        <span data-bind="if:model_type() == 'MAP'"><i class="fa fa-map card_icon"
-                                                                      aria-hidden="true"></i></span>
-                        <span data-bind="if:model_type() == 'MAPPLACE'"><i class="fa fa-map-marker card_icon"
-                                                                           aria-hidden="true"></i></span>
+                            <span data-bind="if:model_type() == 'MAP'"><i class="fa fa-map card_icon"
+                                                                          aria-hidden="true"></i></span>
+                            <span data-bind="if:model_type() == 'MAPPLACE'"><i class="fa fa-map-marker card_icon"
+                                                                               aria-hidden="true"></i></span>
                         </a>
                         <button class="hide dark" title="follow" type="button"></button>
                     </div>
                     <div class="w3-container">
                         <div class="card-info">
-                            <i class="fa fa-thumbs-o-up" aria-hidden="true"
-                               data-bind="click:function(){clickRating($data.rating.good, $data.rating_good_url());}"></i>
-                            <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            <span class="pointer" data-bind="click:function(){clickRating($data.rating.good, $data.rating_good_url());}">
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </span>
                             &nbsp
-                            <i class="fa fa-thumbs-o-down" aria-hidden="true"
-                               data-bind="click:function(){clickRating($data.rating.bad, $data.rating_bad_url());}"></i>
-                            <span class="card-info-msg" data-bind="text:rating.bad"></span>
+                            <span class="pointer" data-bind="click:function(){clickRating($data.rating.bad, $data.rating_bad_url());}">
+                                <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.bad"></span>
+                            </span>
                             {% comment %}
                             <span class="card-info-msg card-info-star">
                 <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-o"></i><i
@@ -412,7 +414,7 @@
             }).autocomplete("instance")._renderItem = function (ul, item) {
                 console.log(item)
                 return $("<li>")
-                    .append("<div><b>" + item.name + "</b><br><small>" + 123 + "</small></div>")
+                    .append("<div><b>" + item.name + "</b><br><small>" + "</small></div>")
                     .appendTo(ul);
             };
         });
@@ -468,13 +470,13 @@
                     var image_preload = [];
                     for (i in data.place_photo) {
                         ViewModel.photo_places.push(data.place_photo[i]);
-                        image_preload.push(data.place_photo[i].photos[0].image_url);
+                        //image_preload.push(data.place_photo[i].photos[0].image_url);
                     }
 
                     preloadImages(image_preload);
 
                     self.changeCoverPhoto();
-                    window.setInterval(self.changeCoverPhoto, 60000);
+                    window.setInterval(self.changeCoverPhoto, 10000);
                 }
             );
 
@@ -527,11 +529,11 @@
                 var img = new Image();
                 var photoObj = self.photo_places()[self.coverIndex];
                 img.onload = function () {
-                    $('#home').css("background-image", "url(" + img.src + ")");
+                    $('#home').css("background-image", "url(" + img + ")");
                     $('#cover_photo').css("background-image", "url(" + photoObj.map_image.image_url + ")");
                     self.coverIndex++;
                 }
-                img.src = photoObj.photos[0].image_url + "?width=1280&height=653";
+                img.src = photoObj.photos[0].image_url + "?width=800&height=600";
 
             }
 

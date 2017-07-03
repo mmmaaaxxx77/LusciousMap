@@ -82,6 +82,11 @@
                     &nbsp
                     <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
                     {{ place.rating.bad.count }}
+                    &nbsp | &nbsp
+                    <a target="_blank" href="{{ place.google_map_url }}">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                        開啟Google Map
+                    </a>
                     <p>{{ place.description }}</p>
                 </div>
             </div>

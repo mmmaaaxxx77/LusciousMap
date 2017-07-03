@@ -15,7 +15,7 @@
         border-right: 1px solid #ABD0CE;
     }
 
-    @media (max-width:601px) {
+    @media (max-width: 601px) {
         .left-side {
             overflow: visible;
             height: auto;
@@ -25,8 +25,10 @@
 
 </style>
 {% block mobilemenu %}
-    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span data-bind="text:map.map.name"></span>介紹</a>
-    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span data-bind="text:map.map.name"></span>地圖</a>
+    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span
+            data-bind="text:map.map.name"></span>介紹</a>
+    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span
+            data-bind="text:map.map.name"></span>地圖</a>
 {% endblock %}
 
 {% block body %}
@@ -93,6 +95,11 @@
                     <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
                        data-bind="click:function(){clickRating(place.place.rating.bad, place.place.rating_bad_url);}"></i>
                     <span data-bind="text:place.place.rating.bad"></span>
+                    &nbsp | &nbsp
+                    <a target="_blank" data-bind="attr:{href:place.place.g_map_url}">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>
+                        開啟Google Map
+                    </a>
                     <p>{{ place.description }}</p>
                     <p data-bind="text:place.place.description"></p>
                 </div>
