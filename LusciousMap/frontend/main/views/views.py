@@ -1,3 +1,5 @@
+import random
+
 from PIL import Image, ImageOps
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.decorators import login_required
@@ -122,7 +124,9 @@ def get_index_detail(request):
     map_count = LMMap.objects.count()
     place_count = LMPlace.objects.filter(user__isnull=False).count()
 
-    place_photo = LMPlace.objects.annotate(num_photos=Count('photos')).filter(user__isnull=False, display__exact=True, num_photos__gt=0).all()[:5]
-    place_photo = [h.as_detail() for h in list(place_photo)]
+    place_photo = LMPlace.objects.annotate(num_photos=Count('photos')).filter(user__isnull=False, display__exact=True, num_photos__gt=0).all()[:10]
+    #place_photo = [h.as_detail() for h in list(place_photo)]
+    place_photo = random.choice(list(place_photo))
+    place_photo = place_photo.as_detail()
 
     return JsonResponse(dict(place_photo=place_photo, map_count=map_count, place_count=place_count))

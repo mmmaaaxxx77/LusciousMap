@@ -430,15 +430,15 @@
                     ViewModel.detail.place_count(data.place_count * 1);
 
                     var image_preload = [];
-                    for (i in data.place_photo) {
-                        ViewModel.photo_places.push(data.place_photo[i]);
-                        image_preload.push(data.place_photo[i].photos[0].image_url + "?width=1280&height=653");
-                    }
+                    //for (i in data.place_photo) {
+                        ViewModel.photo_places.push(data.place_photo);
+                        image_preload.push(data.place_photo.photos[0].image_url + "?width=1280&height=653");
+                    //}
 
-                    preloadImages(image_preload);
+                    //preloadImages(image_preload);
 
                     self.changeCoverPhoto();
-                    window.setInterval(self.changeCoverPhoto, 10000);
+                    //window.setInterval(self.changeCoverPhoto, 10000);
                 }
             );
 
