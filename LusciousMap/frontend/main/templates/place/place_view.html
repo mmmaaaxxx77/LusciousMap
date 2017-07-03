@@ -8,15 +8,35 @@
 {% block header %}
     <link rel="stylesheet" href="{% static "frontend/css/map_view.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
+    <style>
+        .left-side {
+            overflow: scroll;
+            height: calc(100%);
+            border-right: 1px solid #ABD0CE;
+        }
+
+        @media (max-width:601px) {
+            .left-side {
+                overflow: visible;
+                height: auto;
+                border-right: 1px solid #ABD0CE;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block mobilemenu %}
+    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp{{ place.name }}介紹</a>
+    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp{{ place.name }}地圖</a>
 {% endblock %}
 
 {% block body %}
 
-    <div class="w3-container" style="padding:31px 16px" id="home">
+    <div id="detail" class="w3-container" style="padding:31px 16px" id="home">
     </div>
 
-    <div style="height: calc(100% - 63px);">
-        <div class="w3-col s3 w3-white" style="overflow: scroll;height: calc(100%);">
+    <div style="height: calc(100% - 63px)">
+        <div class="w3-col m3 w3-white left-side">
             <!-- 店家detail -->
             <div id="food_deatil">
                 {# slide #}
@@ -82,7 +102,7 @@
             <!-- facebook command end -->
 
         </div>
-        <div class="w3-col s9 w3-container" id="map" style="height: calc(100%);"></div>
+        <div class="w3-col m9 w3-container right-side" id="map" style="height: calc(100%);"></div>
     </div>
 
 
@@ -136,18 +156,6 @@
             $("#food_deatil2").slideToggle("slow");
         }
 
-        function w3_open() {
-            if (mySidebar.style.display === 'block') {
-                mySidebar.style.display = 'none';
-            } else {
-                mySidebar.style.display = 'block';
-            }
-        }
-
-        // Close the sidebar with the close button
-        function w3_close() {
-            mySidebar.style.display = "none";
-        }
         $('.carousel').carousel();
     </script>
 {% endblock %}

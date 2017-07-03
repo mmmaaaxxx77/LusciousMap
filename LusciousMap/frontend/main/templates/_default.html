@@ -4,10 +4,10 @@
 <head>
     <title>好食地圖 Luscious Map {% block title %}{% endblock %}</title>
     <meta name="viewport"
-          content="width=device-width ,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          content="width=device-width ,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <link rel="Shortcut Icon" type="image/x-icon" href="{%static "frontend/img/lusciousmap.ico" %}" />
+    <link rel="Shortcut Icon" type="image/x-icon" href="{% static "frontend/img/lusciousmap.ico" %}"/>
 
     {% block meta %}{% endblock %}
 
@@ -28,7 +28,8 @@
         <!-- Right-sided navbar links -->
         <div class=" w3-hide-small">
             <div class="w3-right">
-                <a href="{% url "index" %}#map" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-map-o"></i>
+                <a href="{% url "index" %}#map" class="w3-bar-item w3-button header-height header-button"><i
+                        class="fa fa-map-o"></i>
                     &nbsp好食地圖</a>
                 <a href="#teach" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-book"></i>
                     &nbsp地圖教學</a>
@@ -36,14 +37,17 @@
                         class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
                 <a href="#pricing" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-sign-language"></i> &nbsp好食直播</a>
-                <a href="{% url "index" %}#about" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-th"></i>
+                <a href="{% url "index" %}#about" class="w3-bar-item w3-button header-height header-button"><i
+                        class="fa fa-th"></i>
                     &nbsp關於我們</a>
                 {% if user.is_authenticated %}
-                <a href="#contact" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-user"></i>
-                    &nbsp{{ user.username }}</a>
+                    <a href="#contact" class="w3-bar-item w3-button header-height header-button"><i
+                            class="fa fa-user"></i>
+                        &nbsp{{ user.username }}</a>
                 {% else %}
-                <a href="#contact" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-user"></i>
-                    &nbsp註冊/登入</a>
+                    <a href="#contact" class="w3-bar-item w3-button header-height header-button"><i
+                            class="fa fa-user"></i>
+                        &nbsp註冊/登入</a>
                 {% endif %}
             </div>
         </div>
@@ -63,18 +67,24 @@
      style="display:none" id="mySidebar">
     <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">&times;
         &nbsp關閉</a>
-    <a href="#home" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp淡水超好吃小吃地圖</a>
-    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp淡水超好吃小吃列表</a>
+    {% block mobilemenu %}
+        <a href="#home" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp淡水超好吃小吃地圖</a>
+        <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i>
+            &nbsp淡水超好吃小吃列表</a>
+    {% endblock %}
     <br>
     <div>
         <div style="margin: 0 auto; width: 80%; height: 1px; border-top: 1px solid #ccc;"></div>
     </div>
     <br>
-    <a href="{% url "index" %}#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-map-o"></i> &nbsp好食地圖</a>
-    <a href="{% url "index" %}#teach" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-book"></i> &nbsp地圖教學</a>
+    <a href="{% url "index" %}#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-map-o"></i>
+        &nbsp好食地圖</a>
+    <a href="{% url "index" %}#teach" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-book"></i>
+        &nbsp地圖教學</a>
     <a href="#team" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
     <a href="#work" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-language"></i> &nbsp好食直播</a>
-    <a href="{% url "index" %}#about" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-th"></i> &nbsp關於我們</a>
+    <a href="{% url "index" %}#about" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-th"></i>
+        &nbsp關於我們</a>
     <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-user"></i> &nbsp註冊/登入</a>
 </nav>
 <!-- Sidebar on small screens when clicking the menu icon end -->
@@ -88,3 +98,17 @@
 </body>
 
 </html>
+<script>
+    function w3_open() {
+        if (mySidebar.style.display === 'block') {
+            mySidebar.style.display = 'none';
+        } else {
+            mySidebar.style.display = 'block';
+        }
+    }
+
+    // Close the sidebar with the close button
+    function w3_close() {
+        mySidebar.style.display = "none";
+    }
+</script>

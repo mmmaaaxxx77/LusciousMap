@@ -8,171 +8,191 @@
     <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
 {% endblock %}
+<style>
+    .left-side {
+        overflow: scroll;
+        height: calc(100%);
+        border-right: 1px solid #ABD0CE;
+    }
+
+    @media (max-width:601px) {
+        .left-side {
+            overflow: visible;
+            height: auto;
+            border-right: 1px solid #ABD0CE;
+        }
+    }
+
+</style>
+{% block mobilemenu %}
+    <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span data-bind="text:map.map.name"></span>介紹</a>
+    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span data-bind="text:map.map.name"></span>地圖</a>
+{% endblock %}
 
 {% block body %}
 
-    <div class="w3-container" style="padding:31px 16px" id="home">
+    <div class="w3-container" style="padding:31px 16px" id="detail">
     </div>
     <div style="height: calc(100% - 63px);">
-    <div class="w3-col s3 w3-white" style="overflow: scroll;height: calc(100%);border-right: 1px solid #ABD0CE;"
-         id="content-left">
-        <!-- 店家detail -->
-        <div id="food_deatil" style="display: none;">
-            {# slide #}
-            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner" role="listbox" style="background: #000;">
-                    <!-- ko template: {foreach: place.place.photos} -->
-                    <!-- ko if: $index() == 0 -->
-                    <div class="item active" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:$data.image_url}">
-                        <div class="carousel-caption">
+        <div class="w3-col m3 w3-white left-side" id="content-left">
+            <!-- 店家detail -->
+            <div id="food_deatil" style="display: none;">
+                {# slide #}
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox" style="background: #000;">
+                        <!-- ko template: {foreach: place.place.photos} -->
+                        <!-- ko if: $index() == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $index() != 0 -->
-                    <div class="item" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:$data.image_url}">
-                        <div class="carousel-caption">
+                        <!-- /ko -->
+                        <!-- ko if: $index() != 0 -->
+                        <div class="item" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
-                    </div>
-                    <!-- /ko -->
-                    <!-- /ko -->
-                    <!-- ko if: $root.place.place.photos().length == 0 -->
-                    <div class="item active" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:place.place.place_image.image_url}">
-                        <div class="carousel-caption">
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: $root.place.place.photos().length == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:place.place.place_image.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
+                        <!-- /ko -->
                     </div>
-                    <!-- /ko -->
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                    </a>
                 </div>
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                    <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                    <span class="fa fa-chevron-right" aria-hidden="true"></span>
-                </a>
+                {# slide end #}
+                <div class="w3-container">
+                    <p>
+                        <button class="w3-button w3-light-grey w3-block"
+                                data-bind="click:function(){ViewModel.map.init()}">
+                            <i class="fa fa-reply"></i> <span data-bind="text:map.map.name"></span>
+                        </button>
+                    </p>
+                    <h4>
+                        <i class="icon-food"></i>&nbsp&nbsp<span data-bind="text:place.place.name"></span>
+                    </h4>
+                    <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
+                       data-bind="click:function(){clickRating(place.place.rating.good, place.place.rating_good_url);}"></i>
+                    <span data-bind="text:place.place.rating.good"></span>
+                    &nbsp
+                    <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
+                       data-bind="click:function(){clickRating(place.place.rating.bad, place.place.rating_bad_url);}"></i>
+                    <span data-bind="text:place.place.rating.bad"></span>
+                    <p>{{ place.description }}</p>
+                    <p data-bind="text:place.place.description"></p>
+                </div>
             </div>
-            {# slide end #}
-            <div class="w3-container">
-                <p>
-                    <button class="w3-button w3-light-grey w3-block"
-                            data-bind="click:function(){ViewModel.map.init()}">
-                        <i class="fa fa-reply"></i> <span data-bind="text:map.map.name"></span>
-                    </button>
-                </p>
-                <h4>
-                    <i class="icon-food"></i>&nbsp&nbsp<span data-bind="text:place.place.name"></span>
-                </h4>
-                <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
-                   data-bind="click:function(){clickRating(place.place.rating.good, place.place.rating_good_url);}"></i>
-                <span data-bind="text:place.place.rating.good"></span>
-                &nbsp
-                <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
-                   data-bind="click:function(){clickRating(place.place.rating.bad, place.place.rating_bad_url);}"></i>
-                <span data-bind="text:place.place.rating.bad"></span>
-                <p>{{ place.description }}</p>
-                <p data-bind="text:place.place.description"></p>
-            </div>
-        </div>
-        <!-- 店家detail end -->
+            <!-- 店家detail end -->
 
-        <!-- 我的地圖detail -->
-        <div id="s_map_detail">
-            {# slide #}
-            <div id="carousel-example-generic2" class="carousel2 carousel slide" data-ride="carousel">
-                <div class="carousel-inner" role="listbox" style="background: #000;">
-                    <!-- ko template: {foreach: map.map.photos} -->
-                    <!-- ko if: $index() == 0 -->
-                    <div class="item active" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:$data.image_url}">
-                        <div class="carousel-caption">
+            <!-- 我的地圖detail -->
+            <div id="s_map_detail">
+                {# slide #}
+                <div id="carousel-example-generic2" class="carousel2 carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox" style="background: #000;">
+                        <!-- ko template: {foreach: map.map.photos} -->
+                        <!-- ko if: $index() == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: $index() != 0 -->
-                    <div class="item" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:$data.image_url}">
-                        <div class="carousel-caption">
+                        <!-- /ko -->
+                        <!-- ko if: $index() != 0 -->
+                        <div class="item" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:$data.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
-                    </div>
-                    <!-- /ko -->
-                    <!-- /ko -->
-                    <!-- ko if: $root.map.map.photos().length == 0 -->
-                    <div class="item active" style="text-align:center;">
-                        <img style="height:240px;margin: 0 auto;"
-                             data-bind="attr:{src:map.map.map_image.image_url}">
-                        <div class="carousel-caption">
+                        <!-- /ko -->
+                        <!-- /ko -->
+                        <!-- ko if: $root.map.map.photos().length == 0 -->
+                        <div class="item active" style="text-align:center;">
+                            <img style="height:240px;margin: 0 auto;"
+                                 data-bind="attr:{src:map.map.map_image.image_url}">
+                            <div class="carousel-caption">
+                            </div>
                         </div>
+                        <!-- /ko -->
                     </div>
-                    <!-- /ko -->
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic2" role="button" data-slide="prev">
+                        <span class="fa fa-chevron-left" aria-hidden="true"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic2" role="button" data-slide="next">
+                        <span class="fa fa-chevron-right" aria-hidden="true"></span>
+                    </a>
                 </div>
-                <!-- Controls -->
-                <a class="left carousel-control" href="#carousel-example-generic2" role="button" data-slide="prev">
-                    <span class="fa fa-chevron-left" aria-hidden="true"></span>
-                </a>
-                <a class="right carousel-control" href="#carousel-example-generic2" role="button" data-slide="next">
-                    <span class="fa fa-chevron-right" aria-hidden="true"></span>
-                </a>
-            </div>
-            {# slide end #}
-            <div class="w3-container" id="map_deatil">
-                <h4><i class="fa fa-map-o"></i>&nbsp&nbsp
-                    <span data-bind="text:map.map.name"></span>
-                    <small style="color: #999">(<span data-bind="text:map.map.places().length"></span>)
-                    </small>
-                </h4>
-                <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
-                   data-bind="click:function(){clickRating(map.map.rating.good, map.map.rating_good_url);}"></i>
-                <span data-bind="text:map.map.rating.good"></span>
-                &nbsp
-                <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
-                   data-bind="click:function(){clickRating(map.map.rating.bad, map.map.rating_bad_url);}"></i>
-                <span data-bind="text:map.map.rating.bad"></span>
-                <p data-bind="text: map.map.description"></p>
-            </div>
-            <div class="w3-container" data-bind="if: isMpaDetailPlaceZero">目前尚無任何店家！</div>
-            <ul class="w3-ul w3-white" style="height: calc(100%);overflow: auto;cursor: pointer;"
-                data-bind="template: {foreach: map.map.places}">
-                <li class="w3-padding-10 detail-item"
-                    data-bind="click:function(){ViewModel.place.init($data.json_url())}">
-                    <div class="detail-item-left">
-                        <small><i class="icon-food"></i></small>
-                        &nbsp
-                        <span data-bind="text:name"></span>
-                    </div>
-                    <div class="detail-item-right">
-                        <small>
-                            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-                            <span class="card-info-msg" data-bind="text:rating.good"></span>
+                {# slide end #}
+                <div class="w3-container" id="map_deatil">
+                    <h4><i class="fa fa-map-o"></i>&nbsp&nbsp
+                        <span data-bind="text:map.map.name"></span>
+                        <small style="color: #999">(<span data-bind="text:map.map.places().length"></span>)
                         </small>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <!-- 我的地圖detail end -->
-        <br>
-        <!-- facebook command -->
-        <div id="fb-root"></div>
-        <script>(function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=618607868202556";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-comments" data-href="{{ request.META.HTTP_HOST }}{{ request.get_full_path|urlencode }}"
-             data-width="100%" data-numposts="5"></div>
-        <!-- facebook command end -->
+                    </h4>
+                    <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
+                       data-bind="click:function(){clickRating(map.map.rating.good, map.map.rating_good_url);}"></i>
+                    <span data-bind="text:map.map.rating.good"></span>
+                    &nbsp
+                    <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
+                       data-bind="click:function(){clickRating(map.map.rating.bad, map.map.rating_bad_url);}"></i>
+                    <span data-bind="text:map.map.rating.bad"></span>
+                    <p data-bind="text: map.map.description"></p>
+                </div>
+                <div class="w3-container" data-bind="if: isMpaDetailPlaceZero">目前尚無任何店家！</div>
+                <ul class="w3-ul w3-white" style="height: calc(100%);overflow: auto;cursor: pointer;"
+                    data-bind="template: {foreach: map.map.places}">
+                    <li class="w3-padding-10 detail-item"
+                        data-bind="click:function(){ViewModel.place.init($data.json_url())}">
+                        <div class="detail-item-left">
+                            <small><i class="icon-food"></i></small>
+                            &nbsp
+                            <span data-bind="text:name"></span>
+                        </div>
+                        <div class="detail-item-right">
+                            <small>
+                                <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                <span class="card-info-msg" data-bind="text:rating.good"></span>
+                            </small>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!-- 我的地圖detail end -->
+            <br>
+            <!-- facebook command -->
+            <div id="fb-root"></div>
+            <script>(function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=618607868202556";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));</script>
+            <div class="fb-comments" data-href="{{ request.META.HTTP_HOST }}{{ request.get_full_path|urlencode }}"
+                 data-width="100%" data-numposts="5"></div>
+            <!-- facebook command end -->
 
+        </div>
+        <div class="w3-col m9 w3-container" id="map" style="height: calc(100%);"></div>
     </div>
-    <div class="w3-col s9 w3-container" id="map" style="height: calc(100%);"></div>
 
 {% endblock %}
 

@@ -8,6 +8,26 @@
     <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/tag/jquery.tag-editor.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
+    <style>
+        .left-side {
+            overflow: scroll;
+            height: calc(100%);
+            border-right: 1px solid #ABD0CE;
+        }
+
+        @media (max-width: 601px) {
+            .left-side {
+                overflow: visible;
+                height: auto;
+                border-right: 1px solid #ABD0CE;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block mobilemenu %}
+    <a href="#home" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp功能列表</a>
+    <a href="#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp地圖</a>
 {% endblock %}
 
 {% block body %}
@@ -15,8 +35,7 @@
     <div class="w3-container" style="padding:31px 16px" id="home">
     </div>
     <div style="height: calc(100% - 63px);">
-        <div class="w3-col s3 w3-white" style="overflow: scroll;height: calc(100%);border-right: 1px solid #ABD0CE;"
-             id="content-left">
+        <div class="w3-col m3 w3-white left-side" id="content-left">
             <div class="w3-center" style="border-bottom: 1px solid #ABD0CE;">
                 <button id="btn_my_food" class="w3-bar-item w3-button edit-menu-btn edit-menu-btn-active"
                         onclick="open_food()"><i class="icon-food"></i> &nbsp我的店家
@@ -82,13 +101,16 @@
                         <i class="icon-food"></i>&nbsp&nbsp<span data-bind="text:my_place_detail.place.name"></span>
                         &nbsp
                         <span style="font-size: 0.5em;">
-                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() == 2, click:my_place_detail.open_edit"><i
+                            <span class="card-info-msg pointer"
+                                  data-bind="visible: infoWindow.state() == 2, click:my_place_detail.open_edit"><i
                                     class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp加入我的地圖</span>
-                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() != 2, click:my_place_detail.open_edit"><i
+                            <span class="card-info-msg pointer"
+                                  data-bind="visible: infoWindow.state() != 2, click:my_place_detail.open_edit"><i
                                     class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp編輯</span>
                             <span data-bind="visible: infoWindow.state() != 2">|</span>
-                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() != 2"><i class="fa fa-times"
-                                                                   aria-hidden="true"></i>&nbsp刪除</span>
+                            <span class="card-info-msg pointer" data-bind="visible: infoWindow.state() != 2"><i
+                                    class="fa fa-times"
+                                    aria-hidden="true"></i>&nbsp刪除</span>
                         </span>
                     </h4>
                     <p data-bind="text:my_place_detail.place.description"></p>
@@ -354,9 +376,16 @@
             <!-- 我的追蹤 end -->
 
         </div>
-        <div class="w3-col s9 w3-container" id="map" style="height: calc(100%);"></div>
+
+        <div class="edit-right-side" id="search_div">
+            <div class="container-4" style="margin: 0 auto; width:370px;">
+                <input type="search" id="search" style="width:350px;" placeholder="地圖標點或搜尋好食 ..."/>
+            </div>
+        </div>
+
+        <div class="w3-col m9 w3-container" id="map" style="height: calc(100%);"></div>
         <!-- 新增地圖 -->
-        <div class="w3-col s9 w3-container" id="edit_map" style="overflow: scroll;height: calc(100%);display: none;">
+        <div class="w3-col m9 w3-container" id="edit_map" style="overflow: scroll;height: calc(100%);display: none;">
             <div style="padding: 5%;">
                 <form id="save_map" action="{% url "save_map" %}" method="post" accept-charset="UTF-8"
                       enctype="multipart/form-data">
@@ -404,13 +433,6 @@
             </div>
         </div>
         <!-- 新增地圖 end -->
-    </div>
-
-    <div class="edit-right-side" id="search_div">
-        <div class="container-4" style="margin: 0 auto">
-            <input type="search" id="search" placeholder="地圖標點或搜尋好食 ..."/>
-            <button class="icon"><i class="fa fa-search"></i></button>
-        </div>
     </div>
 
     <!-- Knockout template -->
@@ -663,8 +685,8 @@
                     tags: ko.observableArray([]),
                 },
                 place_detail: null,
-                last_url:null,
-                refresh:function(){
+                last_url: null,
+                refresh: function () {
                     self.my_place_detail.init(self.my_place_detail.last_url);
                 },
                 init: function (url) {
@@ -807,7 +829,7 @@
             this.infoWindowAction = {
                 submit: function () {
                     $("#place_form_submit").attr('disabled', true);
-                    if(self.search.search.place_id == null) {
+                    if (self.search.search.place_id == null) {
                         $("#place_form input[name=geo_lat]").val(self.infoWindow.lat);
                         $("#place_form input[name=geo_lng]").val(self.infoWindow.lng);
                         $("#place_form input[name=place_id]").val(self.infoWindow.place_id);
@@ -826,7 +848,7 @@
                                 map.hideInfoWindows();
                                 $("#place_form")[0].reset();
                                 self.refresh_list();
-                                if(self.infoWindow.state() == 0 || self.infoWindow.state() == 2)
+                                if (self.infoWindow.state() == 0 || self.infoWindow.state() == 2)
                                     self.my_place_detail.refresh();
                             }
                             infoWindow.close();
