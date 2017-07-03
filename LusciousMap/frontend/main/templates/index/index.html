@@ -473,7 +473,7 @@
                         //image_preload.push(data.place_photo[i].photos[0].image_url);
                     }
 
-                    preloadImages(image_preload);
+                    //preloadImages(image_preload);
 
                     self.changeCoverPhoto();
                     window.setInterval(self.changeCoverPhoto, 10000);
@@ -529,7 +529,7 @@
                 var img = new Image();
                 var photoObj = self.photo_places()[self.coverIndex];
                 img.onload = function () {
-                    $('#home').css("background-image", "url(" + img + ")");
+                    $('#home').css("background-image", "url(" + img.src + ")");
                     $('#cover_photo').css("background-image", "url(" + photoObj.map_image.image_url + ")");
                     self.coverIndex++;
                 }
