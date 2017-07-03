@@ -130,7 +130,6 @@ def save_map(request):
         map.rating = rating
         map.save()
         # tags
-        print(request.POST)
         tags_s = request.POST['map_tags']
         tags_s = tags_s.split(",")
         map.tags.clear()
