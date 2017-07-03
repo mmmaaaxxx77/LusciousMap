@@ -533,7 +533,7 @@
                     $('#cover_photo').css("background-image", "url(" + photoObj.map_image.image_url + ")");
                     self.coverIndex++;
                 }
-                img.src = photoObj.photos[0].image_url;
+                img.src = photoObj.photos[0].image_url + "?width=800&height=600";
 
             }
 
