@@ -331,7 +331,6 @@
 {% endblock %}
 
 {% block script %}
-    <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
     <script>
         $(function () {
@@ -476,7 +475,7 @@
                     //preloadImages(image_preload);
 
                     self.changeCoverPhoto();
-                    window.setInterval(self.changeCoverPhoto, 10000);
+                    //window.setInterval(self.changeCoverPhoto, 10000);
                 }
             );
 
