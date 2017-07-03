@@ -338,43 +338,6 @@
                 if (e.keyCode == 13)
                     ViewModel.clickSearch();
             });
-            map = new GMaps({
-                div: '#h_map',
-                lat: 25.169712,
-                lng: 121.440934,
-                zoom: 16,
-                zoomControl: true,
-                panControl: false,
-                mapTypeControl: false,
-                scaleControl: false,
-                streetViewControl: false,
-                overviewMapControl: false,
-                mapTypeId: 'roadmap',
-                click: function (e) {
-                    map.removeMarkers();
-                    map.hideInfoWindows();
-                    console.log(e);
-                    /*mark = map.addMarker({
-                     lat: e.latLng.lat(),
-                     lng: e.latLng.lng(),
-                     title: 'Lima',
-                     })
-                     marks[marks.length] = mark;*/
-
-                    //$("#geo").val(e.latLng.lat() + " , " + e.latLng.lng());
-                    //$("#geo_lat").val(e.latLng.lat());
-                    //$("#geo_lng").val(e.latLng.lng());
-
-                    var geocoder = new google.maps.Geocoder();
-                    var coord = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
-                    geocoder.geocode({'latLng': coord}, function (results, status) {
-                        if (status === google.maps.GeocoderStatus.OK) {
-                            setMarkNData(e.latLng.lat(), e.latLng.lng(), results[0].place_id);
-                        }
-                    });
-
-                },
-            });
             // search
             $("#search").autocomplete({
                 //source: "{% url "search_map_place" %}",
@@ -472,10 +435,10 @@
                         //image_preload.push(data.place_photo[i].photos[0].image_url);
                     }
 
-                    //preloadImages(image_preload);
+                    preloadImages(image_preload);
 
                     self.changeCoverPhoto();
-                    //window.setInterval(self.changeCoverPhoto, 10000);
+                    window.setInterval(self.changeCoverPhoto, 10000);
                 }
             );
 
@@ -532,7 +495,7 @@
                     $('#cover_photo').css("background-image", "url(" + photoObj.map_image.image_url + ")");
                     self.coverIndex++;
                 }
-                img.src = photoObj.photos[0].image_url + "?width=800&height=600";
+                img.src = photoObj.photos[0].image_url + "?width=1280&height=653";
 
             }
 
