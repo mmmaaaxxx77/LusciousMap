@@ -46,7 +46,7 @@ class LMMapPlace(models.Model):
             user=dict(username=self.user.username),
             json_url=reverse('detail_mapplace', args=[self.id]),
             g_map_url=self.place.google_map_url,
-            webplugin_html='<iframe frameborder="0" width="350" height="300" src="{}"></iframe>'.
+            webplugin_html='<iframe frameborder="0" width="350" height="300" style="border:none; overflow:hidden; width:350px; height:300px;" allowtransparency="true" src="{}"></iframe>'.
                 format(reverse('webplugin_place', args=[self.place.id])),
         )
 
@@ -109,7 +109,7 @@ class LMMap(models.Model):
             rating_bad_url=reverse('bad_map', args=[self.id]),
             json_url=reverse('detail_map', args=[self.id]),
             places=[place.as_detail() for place in self.places.order_by("-createDate").all()],
-            webplugin_html='<iframe frameborder="0" width="350" height="300" src="{}"></iframe>'.
+            webplugin_html='<iframe frameborder="0" width="350" height="300" style="border:none; overflow:hidden; width:350px; height:300px;" allowtransparency="true" src="{}"></iframe>'.
                 format(reverse('webplugin_map', args=[self.id])),
         )
 

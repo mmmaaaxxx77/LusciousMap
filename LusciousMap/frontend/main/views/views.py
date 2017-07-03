@@ -91,6 +91,33 @@ def get_photo(request, image_id):
             return HttpResponse(f.read(), content_type="image/png")
 
 
+def get_photo_thumbnail(request, image_id):
+    photo = LMPhoto.objects.get(id__exact=image_id)
+
+    if 'width' in request.GET.keys() and 'height' in request.GET.keys():
+        image = Image.open(photo.image.path)
+        size = (int(request.GET['width']), int(request.GET['height']))
+        thumb = ImageOps.fit(image, size, Image.ANTIALIAS)
+
+        response = HttpResponse(content_type="image/png")
+        thumb.save(response, "PNG")
+
+        return response
+    else:
+        image = Image.open(photo.image.path)
+        w, h = image.size
+        image = image.resize((w//2, h//2))
+
+        response = HttpResponse(content_type="image/png")
+        image.save(response, "PNG")
+
+        return response
+
+        #
+        #with open(photo.image.path, "rb") as f:
+        #    return HttpResponse(f.read(), content_type="image/png")
+
+
 def get_index_detail(request):
     map_count = LMMap.objects.count()
     place_count = LMPlace.objects.filter(user__isnull=False).count()

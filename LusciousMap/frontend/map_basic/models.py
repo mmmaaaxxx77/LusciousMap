@@ -108,7 +108,8 @@ class LMPhoto(models.Model):
                 name=str(self.image.name),
                 path=str(self.image.path),
             ),
-            image_url=reverse('get_photo', args=[self.id])
+            image_url=reverse('get_photo', args=[self.id]),
+            image_thumbnail_url=reverse('get_photothumbnail', args=[self.id])
         )
 
 
@@ -217,7 +218,7 @@ class LMPlace(models.Model):
             rating_bad_url=reverse('bad_place', args=[self.id]),
             user=dict(username=""),
             g_map_url=self.google_map_url,
-            webplugin_html='<iframe frameborder="0" width="350" height="300" src="{}"></iframe>'.
+            webplugin_html='<iframe frameborder="0" width="350" height="300" style="border:none; overflow:hidden; width:350px; height:300px;" allowtransparency="true" src="{}"></iframe>'.
                 format(reverse('webplugin_place', args=[self.id])),
         )
 

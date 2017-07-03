@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^map/view/(?P<map_id>[\w\-]+)/$', views.map_view, name="map_view"),
     url(r'^map/edit/$', views.map_edit, name="map_edit"),
     url(r'^photo/(?P<image_id>[\w\-]+)/$', views.get_photo, name="get_photo"),
+    url(r'^photothumbnail/(?P<image_id>[\w\-]+)/$', views.get_photo_thumbnail, name="get_photothumbnail"),
     url(r'^index/detail/$', views.get_index_detail, name="get_index_detail"),
     # webplugin
     url(r'^webplugin/map/(?P<map_id>[\w\-]+)/$', webplugin.map, name="webplugin_map"),
