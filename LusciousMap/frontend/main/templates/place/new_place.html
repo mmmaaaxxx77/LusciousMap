@@ -1,7 +1,7 @@
 {% extends '_default.html' %}
 {% load staticfiles %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}新增地點{% endblock %}
 
 {% block header %}
     <link rel="stylesheet" href="{% static "frontend/css/new_place.css" %}">
@@ -112,7 +112,7 @@
                     <input type="hidden" id="place_id" name="place_id">
                     {% csrf_token %}
                     <p>
-                        <button class="w3-button w3-black w3-hover-grey" type="submit">
+                        <button class="w3-button w3-black w3-hover-grey" id="form_submit" type="submit">
                             <i class="fa fa-paper-plane"></i>&nbsp&nbsp新增
                         </button>
                     </p>
@@ -126,7 +126,7 @@
 
 {% block script %}
     <script type="text/javascript"
-            src="https://maps.google.com/maps/api/js?key=AIzaSyCHdxqrk1rnoCf-PZa4rGBMUDy7gzfNjy4&libraries=places"></script>
+            src="https://maps.google.com/maps/api/js?key={{ map_key }}&libraries=places"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.caret.min.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.tag-editor.min.js" %}"></script>
@@ -141,6 +141,7 @@
                     alert("您尚未在地圖上設定地點喔！");
                     return false;
                 }
+                $("#form_submit").prop('disabled', true);
                 return true;
             });
 
@@ -171,17 +172,6 @@
                 click: function (e) {
                     map.removeMarkers();
                     map.hideInfoWindows();
-                    console.log(e);
-                    /*mark = map.addMarker({
-                     lat: e.latLng.lat(),
-                     lng: e.latLng.lng(),
-                     title: 'Lima',
-                     })
-                     marks[marks.length] = mark;*/
-
-                    //$("#geo").val(e.latLng.lat() + " , " + e.latLng.lng());
-                    //$("#geo_lat").val(e.latLng.lat());
-                    //$("#geo_lng").val(e.latLng.lng());
 
                     var geocoder = new google.maps.Geocoder();
                     var coord = new google.maps.LatLng(e.latLng.lat(), e.latLng.lng());
@@ -284,13 +274,11 @@
             select: function (event, ui) {
                 map.removeMarkers();
                 map.hideInfoWindows();
-                console.log(ui.item);
                 if (ui.item.place_id == null) {
                     var geocoder = new google.maps.Geocoder();
                     var coord = new google.maps.LatLng(ui.item.geo_lat, ui.item.geo_lng);
                     geocoder.geocode({'latLng': coord}, function (results, status) {
                         if (status === google.maps.GeocoderStatus.OK) {
-                            console.log(results);
                             ui.item.place_id = results[0].place_id;
                             setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
                         }
@@ -301,7 +289,6 @@
                 return false;
             }
         }).autocomplete("instance")._renderItem = function (ul, item) {
-            console.log(item)
             return $("<li>")
                 .append("<div><b>" + item.long_name + "</b><br><small>" + item.address + "</small></div>")
                 .appendTo(ul);

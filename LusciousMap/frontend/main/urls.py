@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^$', views.index, name="index"),
     url(r'^place/new/$', views.new_place, name="new_place"),
     url(r'^place/view/(?P<place_id>[\w\-]+)/$', views.place_view, name="place_view"),
-    url(r'^map/place/view/(?P<place_id>[\w\-]+)/$', views.map_place_view, name="map_place_view"),
     url(r'^map/view/(?P<map_id>[\w\-]+)/$', views.map_view, name="map_view"),
     url(r'^map/edit/$', views.map_edit, name="map_edit"),
     url(r'^photo/(?P<image_id>[\w\-]+)/$', views.get_photo, name="get_photo"),

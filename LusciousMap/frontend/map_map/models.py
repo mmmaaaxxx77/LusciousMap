@@ -40,7 +40,7 @@ class LMMapPlace(models.Model):
             geo_lng=self.place.geo_lng,
             map_image=self.place.map_image.as_json(),
             tags=[h.as_json() for h in list(self.tags.all())],
-            url=reverse('map_place_view', args=[self.id]),
+            url=reverse('place_view', args=[self.id]),
             rating_good_url=reverse('good_place', args=[self.place.id]),
             rating_bad_url=reverse('bad_place', args=[self.place.id]),
             user=dict(username=self.user.username),

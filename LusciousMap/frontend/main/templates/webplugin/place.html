@@ -119,17 +119,17 @@
     </div>
     <div class="detail">
         <div style="height:100%;overflow: scroll; color:#666;font-size: 0.9em;">
-            {{ place.google_address }}
+            {{ place.google_address | default_if_none:""}}
             {% if place.google_address|length > 0 %}
             <br/>
             {% endif %}
 
-            {{ place.google_international_phone_number }}
+            {{ place.google_international_phone_number | default_if_none:"" }}
             {% if place.google_international_phone_number|length > 0 %}
             <br/>
             {% endif %}
 
-            {{ place.description }}
+            {{ place.description | default_if_none:""}}
         </div>
     </div>
     <div class="bottom">

@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     # Luscious Map
     'frontend.map_basic',
     'frontend.map_map',
+    'frontend.google_service',
     # all auth
     'django.contrib.sites',
     'allauth',
@@ -85,15 +87,15 @@ WSGI_APPLICATION = 'LusciousMap.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 """
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -104,7 +106,7 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-"""
+
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -153,19 +155,17 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-#STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "p_static")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # security
 SESSION_COOKIE_AGE = 36000
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = '/accounts/login/'
 
 # Log
 LOGGING = {

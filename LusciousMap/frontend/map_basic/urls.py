@@ -18,6 +18,7 @@ from django.conf.urls import url
 from frontend.map_basic import views
 
 urlpatterns = [
+    url(r'^place/detail/(?P<place_id>[\w\-]+)/$', views.place_detail, name="place_detail"),
     url(r'^place/search/$', views.search_place, name="search_place"),
     url(r'^tag/search/$', views.search_tag, name="search_tag"),
     url(r'^place/edit/new/$', views.new_place, name="edit_new_place"),

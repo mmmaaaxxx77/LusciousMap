@@ -4,12 +4,14 @@ import uuid
 
 import googlemaps
 import requests
+from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.db.models import Q, Count
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 
 from LusciousMap import settings
+from frontend.google_service.views import service_key_getter
 from frontend.map_basic.form import ImageUploadForm
 from frontend.map_basic.models import LMPlaceType, LMCountry, LMCity, LMAttraction, LMPlace, LMRating, LMPhoto, LMTag
 from frontend.map_map.models import LMMapPlace, LMUserDetail, LMMap
@@ -81,6 +83,7 @@ def save_new_place(request):
     map_place = LMMapPlace() if LMMapPlace.objects.filter(place_id__exact=place.id).count() == 0 else LMMapPlace.objects.filter(place__exact=place).all()[0]
     map_place.place = place
     map_place.name = request.POST['name'].encode('utf-8')
+    map_place.save()
     if not request.user.is_authenticated:
         map_place.display = False
     map_place.description = request.POST['description'].encode('utf-8')
@@ -121,14 +124,14 @@ def save_new_place(request):
 def createLMPlace(request, photo):
     # gmap
     language = request.LANGUAGE_CODE
-    gmaps = googlemaps.Client(key='AIzaSyBrDE4eR5-wQnExMbULIH2JyrKUzMYYbQw')
+    gmaps = googlemaps.Client(key=service_key_getter(1))
     result = gmaps.place(request.POST['place_id'], language=language)
 
     # gmap static image
     url = "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=18&size=500x500&maptype=roadmap"
     url += "&center={},{}".format(request.POST['geo_lat'], request.POST['geo_lng'])
     url += "&markers=color:red%7C{},{}".format(request.POST['geo_lat'], request.POST['geo_lng'])
-    url += "&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A"
+    url += "&key={}".format(service_key_getter(1))
 
     filename = "{}.png".format(uuid.uuid4())
     map_image_path = settings.MEDIA_ROOT + "/map_images/" + filename
@@ -165,6 +168,8 @@ def createLMPlace(request, photo):
     place.geo_lng = request.POST['geo_lng']
     rating = LMRating()
     place.rating = rating
+    rating.save()
+    place.save()
 
     # auth
     if request.user.is_authenticated:
@@ -176,13 +181,15 @@ def createLMPlace(request, photo):
         tags_s = tags_s.split(",")
         place.tags.clear()
         for tag in tags_s:
-            try:
-                tag_inst = LMTag.objects.get(name__exact=tag)
-            except:
+            tag_inst = LMTag.objects.filter(name__exact=tag).all()
+            if len(tag_inst) != 0:
+                tag_inst = tag_inst[0]
+            else:
                 tag_inst = LMTag()
                 tag_inst.name = tag
                 tag_inst.save()
-                tag_inst.createUser = request.user
+                if request.user.is_authenticated:
+                    tag_inst.createUser = request.user
             place.tags.add(tag_inst)
 
     # photo
@@ -216,7 +223,7 @@ def createLMPlace(request, photo):
 
 
 def get_google_photo(width, height, photo_reference):
-    url = "https://maps.googleapis.com/maps/api/place/photo?sensor=false&key=AIzaSyBrDE4eR5-wQnExMbULIH2JyrKUzMYYbQw"
+    url = "https://maps.googleapis.com/maps/api/place/photo?sensor=false&key={}".format(service_key_getter(1))
     url += "&photoreference={}".format(photo_reference)
     url += "&maxheight={}&maxwidth={}".format(height, width)
 
@@ -234,6 +241,7 @@ def get_google_photo(width, height, photo_reference):
     return map_image
 
 
+@login_required
 def good_to_place(request, place_id):
     if request.user.is_authenticated:
         user = request.user
@@ -252,6 +260,7 @@ def good_to_place(request, place_id):
         return JsonResponse(dict(auth=False, success=False))
 
 
+@login_required
 def bad_to_place(request, place_id):
     if request.user.is_authenticated:
         user = request.user
@@ -268,3 +277,17 @@ def bad_to_place(request, place_id):
             return JsonResponse(dict(auth=True, success=True))
     else:
         return JsonResponse(dict(auth=False, success=False))
+
+
+def place_detail(request, place_id):
+    try:
+        place = LMPlace.objects.get(id__exact=place_id)
+        place_json = place.as_detail()
+    except:
+        place = LMMapPlace.objects.get(id__exact=place_id)
+        place_json = place.place.as_detail()
+        place_json['name'] = place.name
+        place_json['description'] = place.description
+        place_json['photos'] = place.as_detail()['photos']
+
+    return JsonResponse(dict(place=place_json))

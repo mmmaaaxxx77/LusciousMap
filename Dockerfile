@@ -1,6 +1,6 @@
 # VERSION 1 - EDITION 1
 
-FROM mmmaaaxxx77/vtt
+FROM mmmaaaxxx77/ubuntu-ml-django
 
 MAINTAINER johnny
 

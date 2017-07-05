@@ -1,29 +1,44 @@
 {% extends '_default.html' %}
 {% load staticfiles %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ map.map.name }}{% endblock %}
+
+{% block meta %}
+    <meta name="title" content="好食地圖 - Luscious Map | {{ map.map.name }}">
+    <meta name="description" content="{{ map.map.description }}">
+    <meta name="keywords" content="{{ map.map.tags.all | join:"," }}">
+
+    <meta property="og:image" content="{{ request.get_host }}{% url "get_photo" image_id=map.map.map_image.id %}">
+    <meta property="og:title" content="好食地圖 - Luscious Map | {{ map.map.name }}">
+    <meta property="og:description" content="{{ map.map.description }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image:width" content="{{ map.map.map_image.image.width }}">
+    <meta property="og:image:height" content="{{ map.map.map_image.image.height }}">
+{% endblock %}
 
 {% block header %}
     <link rel="stylesheet" href="{% static "frontend/css/map_edit.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
     <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
-{% endblock %}
-<style>
-    .left-side {
-        overflow: scroll;
-        height: calc(100%);
-        border-right: 1px solid #ABD0CE;
-    }
-
-    @media (max-width: 601px) {
+    <link rel="stylesheet" href="{% static "frontend/plugins/vex/css/vex.css" %}"/>
+    <link rel="stylesheet" href="{% static "frontend/plugins/vex/css/vex-theme-plain.css" %}"/>
+    <style>
         .left-side {
-            overflow: visible;
-            height: auto;
+            overflow: scroll;
+            height: calc(100%);
             border-right: 1px solid #ABD0CE;
         }
-    }
 
-</style>
+        @media (max-width: 601px) {
+            .left-side {
+                overflow: visible;
+                height: auto;
+                border-right: 1px solid #ABD0CE;
+            }
+        }
+
+    </style>
+{% endblock %}
 {% block mobilemenu %}
     <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span
             data-bind="text:map.map.name"></span>介紹</a>
@@ -88,18 +103,26 @@
                     <h4>
                         <i class="icon-food"></i>&nbsp&nbsp<span data-bind="text:place.place.name"></span>
                     </h4>
-                    <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
-                       data-bind="click:function(){clickRating(place.place.rating.good, place.place.rating_good_url);}"></i>
-                    <span data-bind="text:place.place.rating.good"></span>
+                    <span class="pointer"
+                          data-bind="click:function(){clickRating(place.place.rating.good, place.place.rating_good_url);}">
+                        <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"></i>
+                        <span data-bind="text:place.place.rating.good"></span>
+                    </span>
                     &nbsp
-                    <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
-                       data-bind="click:function(){clickRating(place.place.rating.bad, place.place.rating_bad_url);}"></i>
-                    <span data-bind="text:place.place.rating.bad"></span>
-                    &nbsp | &nbsp
+                    <span class="pointer"
+                          data-bind="click:function(){clickRating(place.place.rating.bad, place.place.rating_bad_url);}">
+                        <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"></i>
+                        <span data-bind="text:place.place.rating.bad"></span>
+                    </span>
+                    <br/>
                     <a target="_blank" data-bind="attr:{href:place.place.g_map_url}">
                         <i class="fa fa-external-link" aria-hidden="true"></i>
                         開啟Google Map
                     </a>
+                    &nbsp | &nbsp
+                    <span class="pointer" data-bind="click:function(){click_place_webplugin();}">
+                           <i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp嵌入地圖
+                    </span>
                     <p>{{ place.description }}</p>
                     <p data-bind="text:place.place.description"></p>
                 </div>
@@ -153,13 +176,21 @@
                         <small style="color: #999">(<span data-bind="text:map.map.places().length"></span>)
                         </small>
                     </h4>
-                    <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"
-                       data-bind="click:function(){clickRating(map.map.rating.good, map.map.rating_good_url);}"></i>
-                    <span data-bind="text:map.map.rating.good"></span>
+                    <span class="pointer"
+                          data-bind="click:function(){clickRating(map.map.rating.good, map.map.rating_good_url);}">
+                        <i class="fa fa-thumbs-o-up pointer" aria-hidden="true"></i>
+                        <span data-bind="text:map.map.rating.good"></span>
+                    </span>
                     &nbsp
-                    <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"
-                       data-bind="click:function(){clickRating(map.map.rating.bad, map.map.rating_bad_url);}"></i>
-                    <span data-bind="text:map.map.rating.bad"></span>
+                    <span class="pointer"
+                          data-bind="click:function(){clickRating(map.map.rating.bad, map.map.rating_bad_url);}">
+                        <i class="fa fa-thumbs-o-down pointer" aria-hidden="true"></i>
+                        <span data-bind="text:map.map.rating.bad"></span>
+                    </span>
+                    &nbsp | &nbsp
+                    <span class="pointer" data-bind="click:function(){click_map_webplugin();}">
+                           <i class="fa fa-picture-o" aria-hidden="true"></i>&nbsp嵌入地圖
+                    </span>
                     <p data-bind="text: map.map.description"></p>
                 </div>
                 <div class="w3-container" data-bind="if: isMpaDetailPlaceZero">目前尚無任何店家！</div>
@@ -193,7 +224,7 @@
                 js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=618607868202556";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));</script>
-            <div class="fb-comments" data-href="{{ request.META.HTTP_HOST }}{{ request.get_full_path|urlencode }}"
+            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}"
                  data-width="100%" data-numposts="5"></div>
             <!-- facebook command end -->
 
@@ -206,10 +237,13 @@
 {% block script %}
     <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
     <script type="text/javascript"
-            src="https://maps.google.com/maps/api/js?key=AIzaSyCHdxqrk1rnoCf-PZa4rGBMUDy7gzfNjy4&libraries=places"></script>
+            src="https://maps.google.com/maps/api/js?key={{ map_key }}&libraries=places"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/vex/js/vex.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/vex/js/vex.combined.js" %}"></script>
+    <script>vex.defaultOptions.className = 'vex-theme-plain'</script>
     <script>
         var map;
         var mark;
@@ -235,6 +269,7 @@
                     tags: ko.observableArray([]),
                     rating_good_url: null,
                     rating_bad_url: null,
+                    webplugin: null,
                 },
                 init: function () {
                     $.getJSON("{{ map.url }}",
@@ -242,6 +277,7 @@
                             data = data.map;
                             model = ViewModel.map.map;
                             model.id = data.id;
+                            model.webplugin = data.webplugin_html;
                             model.rating_good_url = data.rating_good_url;
                             model.rating_bad_url = data.rating_bad_url;
                             model.name(data.name);
@@ -325,9 +361,10 @@
                     },
                     photos: ko.observableArray([]),
                     tags: ko.observableArray([]),
-                    g_map_url: null,
+                    g_map_url: ko.observable(""),
                     rating_good_url: null,
                     rating_bad_url: null,
+                    webplugin: null,
                 },
                 init: function (url) {
                     $.getJSON(url,
@@ -335,9 +372,10 @@
                             data = data.place;
                             model = ViewModel.place.place;
                             model.id = data.id;
+                            model.webplugin = data.webplugin_html;
                             model.rating_good_url = data.rating_good_url;
                             model.rating_bad_url = data.rating_bad_url;
-                            model.g_map_url = data.g_map_url;
+                            model.g_map_url(data.g_map_url);
                             model.name(data.name);
                             model.description(data.description);
                             model.rating.good(data.rating.good);
@@ -369,7 +407,7 @@
                     var photo_url = self.place.place.photos()[0].image_url;
                     html += '<img src="' + photo_url + '" style="max-width:200px;">';
                 }
-                html += '<br/><a target="_blank" href="' + self.place.place.g_map_url + '">Googld Map開啟</a>'
+                html += '<br/><a target="_blank" href="' + self.place.place.g_map_url() + '">Googld Map開啟</a>'
 
                 map.setCenter(geo_lat, geo_lng);
                 map.setZoom(16);
@@ -394,7 +432,6 @@
         }
 
         $(function () {
-            ko.applyBindings(ViewModel);
             $('.carousel').carousel();
 
             map = new GMaps({
@@ -413,6 +450,8 @@
                 overviewMapControl: false,
                 mapTypeId: 'roadmap',
             });
+
+            ko.applyBindings(ViewModel);
         });
 
         function open_food_detail() {
@@ -427,6 +466,37 @@
             $("#food").slideUp('slow');
         }
 
+        function click_map_webplugin() {
+            var text = ViewModel.map.map.webplugin;
+            vex.dialog.open({
+                message: '複製以下程式碼貼到文章編輯原始碼區塊即可。',
+                input: [
+                    text,
+                    '<textarea row="3" style="height:150px;" readonly>' + text + '</textarea>',
+                ].join(''),
+                buttons: [
+                    $.extend({}, vex.dialog.buttons.NO, {text: '確認'})
+                ],
+                callback: function (data) {
+                }
+            })
+        }
+
+        function click_place_webplugin() {
+            var text = ViewModel.place.place.webplugin;
+            vex.dialog.open({
+                message: '複製以下程式碼貼到文章編輯原始碼區塊即可。',
+                input: [
+                    text,
+                    '<textarea row="3" style="height:150px;" readonly>' + text + '</textarea>',
+                ].join(''),
+                buttons: [
+                    $.extend({}, vex.dialog.buttons.NO, {text: '確認'})
+                ],
+                callback: function (data) {
+                }
+            })
+        }
 
     </script>
 {% endblock %}

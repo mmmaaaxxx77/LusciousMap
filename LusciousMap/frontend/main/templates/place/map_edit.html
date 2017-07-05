@@ -113,6 +113,9 @@
                                     aria-hidden="true"></i>&nbsp刪除</span>
                         </span>
                     </h4>
+                    <a target="_blank" data-bind="attr:{href:my_place_detail.place.url}">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>&nbsp開啟檢視
+                    </a>
                     <p data-bind="text:my_place_detail.place.description"></p>
                 </div>
             </div>
@@ -171,6 +174,9 @@
                                                                    aria-hidden="true"></i>&nbsp刪除</span>
                         </span>
                     </h4>
+                    <a target="_blank" data-bind="attr:{href:my_map_detail.map.url}">
+                        <i class="fa fa-external-link" aria-hidden="true"></i>&nbsp開啟檢視
+                    </a>
                     <p data-bind="text: my_map_detail.map.description">我的淡水私房美食！</p>
                 </div>
                 <div class="w3-container" data-bind="if: isMpaDetailPlaceZero">目前尚無任何店家，請在地圖上新增喔！</div>
@@ -498,7 +504,7 @@
 {% block script %}
     <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
     <script type="text/javascript"
-            src="https://maps.google.com/maps/api/js?key=AIzaSyCHdxqrk1rnoCf-PZa4rGBMUDy7gzfNjy4&libraries=places"></script>
+            src="https://maps.google.com/maps/api/js?key={{ map_key }}&libraries=places"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/gmaps.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
     <script type="text/javascript" src="{% static "frontend/plugins/tag/jquery.caret.min.js" %}"></script>
@@ -601,15 +607,16 @@
                     tags: ko.observableArray([]),
                     type: null,
                     country: null,
+                    url: ko.observable(""),
                 },
                 init: function (url) {
                     $.getJSON(url,
                         function (data, status) {
                             data = data.map;
-                            console.log(data);
                             //kdata = ko.mapping.fromJS(data);
                             model = ViewModel.my_map_detail.map;
                             model.id = data.id;
+                            model.url(data.url);
                             model.name(data.name);
                             model.description(data.description);
                             model.rating.good(data.rating.good);
@@ -661,7 +668,6 @@
                             $("#map_tags").val(tags.join(","));
                         }
                     });
-                    console.log(model.tags());
                     for (i in model.tags()) {
                         $('#m_tags').tagEditor('addTag', model.tags()[i].name());
                     }
@@ -685,6 +691,7 @@
                     },
                     photos: ko.observableArray([]),
                     tags: ko.observableArray([]),
+                    url: ko.observable(""),
                 },
                 place_detail: null,
                 last_url: null,
@@ -697,9 +704,9 @@
                         function (data, status) {
                             data = data.place;
                             ViewModel.my_place_detail.place_detail = data;
-                            console.log(data);
                             model = ViewModel.my_place_detail.place;
                             model.id = data.id;
+                            model.url(data.url);
                             model.name(data.name);
                             model.description(data.description);
                             model.rating.good(data.rating.good);
@@ -755,7 +762,6 @@
             self.my_follows.init();
 
             this.setMapMarks = function (place_list) {
-                console.log(place_list);
                 map.removeMarkers();
 
                 if (place_list.length > 0) {
@@ -968,7 +974,6 @@
                 click: function (e) {
                     map.removeMarkers();
                     map.hideInfoWindows();
-                    console.log(e);
                     mark = map.addMarker({
                         lat: e.latLng.lat(),
                         lng: e.latLng.lng(),
@@ -1065,13 +1070,11 @@
                 select: function (event, ui) {
                     map.removeMarkers();
                     map.hideInfoWindows();
-                    console.log(ui.item);
                     if (ui.item.place_id == null) {
                         var geocoder = new google.maps.Geocoder();
                         var coord = new google.maps.LatLng(ui.item.geo_lat, ui.item.geo_lng);
                         geocoder.geocode({'latLng': coord}, function (results, status) {
                             if (status === google.maps.GeocoderStatus.OK) {
-                                console.log(results);
                                 ui.item.place_id = results[0].place_id;
                                 setMarkNData(ui.item.geo_lat, ui.item.geo_lng, ui.item.place_id);
                             }
@@ -1082,7 +1085,6 @@
                     return false;
                 }
             }).autocomplete("instance")._renderItem = function (ul, item) {
-                console.log(item)
                 return $("<li>")
                     .append("<div><b>" + item.long_name + "</b><br><small>" + item.address + "</small></div>")
                     .appendTo(ul);

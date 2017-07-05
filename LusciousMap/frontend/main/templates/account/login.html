@@ -1,46 +1,66 @@
-{% extends "account/base.html" %}
-
+{% extends '_default.html' %}
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
 {% load account socialaccount %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block title %}好食地圖 Luscious Map - 登入{% endblock %}
 
-{% block content %}
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/css/index.css" %}">
 
-<h1>{% trans "Sign In" %}</h1>
+    <style>
+        ul {
+            margin-left: 0;
+            padding-left: 0;
+        }
 
-{% get_providers as socialaccount_providers %}
+        li {
+            list-style-type: none;
+            margin-left: 0;
+        }
 
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+        .facebook {
+            text-transform: uppercase;
+            font-size: 1.5em;
+            padding: 10px 50px 10px 50px;
+            border: solid 0px #c0c0c0;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            background: #3B5998;
+            color: white;
+            letter-spacing: 3px;
+        }
 
-<div class="socialaccount_ballot">
+        li :hover {
+            background: #568e98;
+            -webkit-transition: background-color 500ms linear;
+            -ms-transition: background-color 500ms linear;
+            transition: background-color 500ms linear;
+        }
+    </style>
 
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
+{% endblock %}
 
-  <div class="login-or">{% trans 'or' %}</div>
+{% block body %}
+    <div class="w3-container" style="padding:31px 16px" id="home"></div>
 
-</div>
+    <div class="w3-container" style="text-align: center;height:calc(70%);">
+        <br/><br/><br/><br/>
 
-{% include "socialaccount/snippets/login_extra.html" %}
+        <img src="{% static "frontend/img/title_black.png" %}" style="width: 300px;">
+        <div style="margin-top:30px;width:100%; text-align: center;font-size: 1.5em;">
+            登入
+        </div>
+        <ul>
+            {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </ul>
 
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
+        <br/><br/><br/><br/><br/><br/>
+    </div>
+    <div id="fb-root"></div>
+    <div id="fb-root"></div>
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
-</form>
-
+    {% include '_footer.html' %}
 {% endblock %}

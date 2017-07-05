@@ -3,7 +3,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load staticfiles %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{% endblock %}
 
 {% block header %}
     <link rel="stylesheet" href="{% static "frontend/css/index.css" %}">
@@ -13,7 +13,7 @@
 
     <!-- Header with full-height image -->
     <header class="bgimg-1 w3-display-container w3-grayscale-min header header-bg-img change-background-image" id="home"
-            style="background-image: url('http://localhost:8000/zh-hant/photo/3e9e9914-90b1-409f-9d8d-3edb9b8eae9b/?width=1280&height=653');background-position:center;background-repeat:no-repeat;background-size:cover;">
+            style="background-position:center;background-repeat:no-repeat;background-size:cover;">
         <div class="w3-display-left w3-text-white header-left-side" style="padding:48px">
             <span class="w3-jumbo w3-hide-small">你的、我的 必吃美食</span>
             <br>
@@ -30,7 +30,7 @@
         </div>
         <div class="w3-display-right w3-text-white w3-hide-small w3-mobile w3-hide-ipad" style="padding:48px">
             <div id="cover_photo" class="change-background-image"
-                 style="width:550px;height:500px;background-image: url('http://localhost:8000/zh-hant/photo/3e9e9914-90b1-409f-9d8d-3edb9b8eae9b/');background-position:center;background-repeat:no-repeat;background-size:cover;"></div>
+                 style="width:550px;height:500px;background-position:center;background-repeat:no-repeat;background-size:cover;"></div>
         </div>
         <div class="w3-display-bottomleft w3-xxxlarge" style="padding:24px 48px;color: #EFFFE9;">
             <a href="https://www.facebook.com/LusciousMap/" target="_blank"><i
@@ -246,7 +246,7 @@
         <!-- more -->
         <p>
             <button class="w3-button w3-block more" data-bind="click: clickListMore, visible: hideMoreBtn"><i
-                    class="fa fa-spinner "></i> 更多
+                    class="fa fa-plus"></i>&nbsp&nbsp更多
             </button>
         </p>
         <!-- more end -->
@@ -374,7 +374,6 @@
                     return false;
                 }
             }).autocomplete("instance")._renderItem = function (ul, item) {
-                console.log(item)
                 return $("<li>")
                     .append("<div><b>" + item.name + "</b><br><small>" + "</small></div>")
                     .appendTo(ul);
@@ -417,7 +416,6 @@
                     ViewModel.search.page(data.page * 1);
 
                     list = ViewModel.listItems;
-                    console.log(data);
                     for (i in data.result) {
                         list.push(ko.mapping.fromJS(data.result[i]));
                     }
@@ -425,7 +423,6 @@
             // detail
             $.getJSON("{% url "get_index_detail" %}"
                 , function (data, status) {
-                    console.log(data);
                     ViewModel.detail.map_count(data.map_count * 1)
                     ViewModel.detail.place_count(data.place_count * 1);
 

@@ -2,17 +2,20 @@ import os
 import urllib.request
 import uuid
 
+from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.http import JsonResponse
 from django.shortcuts import render
 
 from LusciousMap import settings
+from frontend.google_service.views import service_key_getter
 from frontend.map_basic.form import MapUploadForm, ImageUploadForm
-from frontend.map_basic.models import LMPlaceType, LMCountry, LMRating, LMTag, LMPhoto
+from frontend.map_basic.models import LMPlaceType, LMCountry, LMRating, LMTag, LMPhoto, LMPlace
 from frontend.map_basic.views import save_new_place
 from frontend.map_map.models import LMMap, LMMapPlace, LMUserDetail
 
 
+@login_required
 def list_follows(request):
     user = request.user
     detail = LMUserDetail.objects.get(user__exact=user)
@@ -21,6 +24,7 @@ def list_follows(request):
     return JsonResponse(dict(follows=follows))
 
 
+@login_required
 def list_mapplace(request):
     user = request.user
     places = LMMapPlace.objects.filter(user__exact=user, display__exact=True).order_by("-createDate").all()
@@ -36,6 +40,7 @@ def detail_mapplace(request, place_id):
     return JsonResponse(dict(place=place.as_detail()))
 
 
+@login_required
 def list_map(request):
     user = request.user
     maps = LMMap.objects.filter(user__exact=user, display__exact=True).order_by("-createDate").all()
@@ -50,6 +55,7 @@ def detail_map(request, map_id):
     return JsonResponse(dict(map=map.as_detail()))
 
 
+@login_required
 def edit_map(request):
     if request.method == 'GET':
         # type
@@ -68,6 +74,7 @@ def edit_map(request):
         return JsonResponse(dict(success=True))
 
 
+@login_required
 def save_map(request):
 
     user = request.user
@@ -77,6 +84,7 @@ def save_map(request):
         map = LMMap.objects.get(id__exact=request.POST['map_id'])
         map.name = request.POST['map_name']
         map.description = request.POST['map_description'] if 'map_description' in request.POST.keys() else ""
+        map.save()
         # type
         p_type = LMPlaceType.objects.filter(id__exact=request.POST['map_type']).all()[0]
         map.place_types.clear()
@@ -116,6 +124,7 @@ def save_map(request):
         map = LMMap()
         map.name = request.POST['map_name']
         map.description = request.POST['map_description'] if 'map_description' in request.POST.keys() else ""
+        map.save()
         # user
         map.user = user
         # type
@@ -168,7 +177,7 @@ def get_static_map_photo(geo_lat, geo_lng, zoom):
     url = "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom={}&size=500x500&maptype=roadmap".format(zoom)
     url += "&center={},{}".format(geo_lat, geo_lng)
     url += "&markers=color:red%7C{},{}".format(geo_lat, geo_lng)
-    url += "&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A"
+    url += "&key={}".format(service_key_getter(1))
 
     filename = "{}.png".format(uuid.uuid4())
     map_image_path = settings.MEDIA_ROOT + "/map_images/" + filename
@@ -184,6 +193,7 @@ def get_static_map_photo(geo_lat, geo_lng, zoom):
     return map_image
 
 
+@login_required
 def save_map_mark(request):
     if request.method == 'POST':
         user = request.user
@@ -196,7 +206,11 @@ def save_map_mark(request):
                 map.places.add(place)
             if map.places.count() > 0:
                 image = get_map_static_image(map.places.all())
-                map.map_image.delete()
+                try:
+                    map.map_image.delete()
+                    map.save()
+                except:
+                    print("delete image error")
                 map.map_image = image
 
             map.save()
@@ -221,6 +235,7 @@ def save_map_mark(request):
         return JsonResponse(dict(success=False))
 
 
+@login_required
 def edit_map_place(request, place):
     place.name = request.POST['name']
     place.description = request.POST['description']
@@ -255,7 +270,7 @@ def get_map_static_image(geo_list):
     url += "&center={},{}".format(geo_list[0].place.geo_lat, geo_list[0].place.geo_lng)
     for geo in geo_list:
         url += "&markers=color:blue%7C{},{}".format(geo.place.geo_lat, geo.place.geo_lng)
-    url += "&key=AIzaSyCsvaHlWVAmUz1OxkYngG7Ne2L8NpjgU0A"
+    url += "&key={}".format(service_key_getter(1))
 
     filename = "{}.png".format(uuid.uuid4())
     map_image_path = settings.MEDIA_ROOT + "/map_images/" + filename

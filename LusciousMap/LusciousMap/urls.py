@@ -15,13 +15,65 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.conf.urls.i18n import i18n_patterns
-from django.contrib import admin
+from django.contrib import admin, sitemaps
+from django.contrib.sitemaps.views import sitemap
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
+
+from frontend.map_basic.models import LMPlace
+from frontend.map_map.models import LMMap
+
+
+class LMMapSitemap(sitemaps.Sitemap):
+    changefreq = "daily"
+    priority = 0.5
+
+    def items(self):
+        return LMMap.objects.filter(display__exact=True)
+
+    def lastmod(self, obj):
+        return obj.updateDate
+
+    def location(self, item):
+        return reverse('map_view', args=[item.id])
+
+
+class LMPlaceSitemap(sitemaps.Sitemap):
+    changefreq = "daily"
+    priority = 0.5
+
+    def items(self):
+        return LMPlace.objects.filter(display__exact=True)
+
+    def lastmod(self, obj):
+        return obj.updateDate
+
+    def location(self, item):
+        return reverse('place_view', args=[item.id])
+
+
+class StaticViewSitemap(sitemaps.Sitemap):
+    priority = 0.5
+    changefreq = 'daily'
+
+    def items(self):
+        return ['index']
+
+    def location(self, item):
+        return reverse(item)
+
+sitemaps = {
+    'map': LMMapSitemap,
+    'place': LMPlaceSitemap,
+    'static': StaticViewSitemap,
+}
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'', include('frontend.main.urls')),
+    # url(r'', include('frontend.main.urls')),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap')
 ]
 
 urlpatterns += i18n_patterns(

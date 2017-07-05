@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -105,6 +106,7 @@ def init_recommend_list(request):
         return generatePagingJSONResult(pagingObject=res, SerializerObject=res['result'])
 
 
+@login_required
 def good_to_map(request, place_id):
     if request.user.is_authenticated:
         user = request.user
@@ -123,6 +125,7 @@ def good_to_map(request, place_id):
         return JsonResponse(dict(auth=False, success=False))
 
 
+@login_required
 def bad_to_map(request, place_id):
     if request.user.is_authenticated:
         user = request.user
