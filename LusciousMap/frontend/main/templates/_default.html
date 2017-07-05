@@ -14,7 +14,7 @@
         <meta name="description" content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。">
         <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,小吃,餐廳,夜市,鬧區,分享,景點">
 
-        <meta property="og:image" content="{% static "frontend/img/title_black.png" %}">
+        <meta property="og:image" content="{{ request.get_host }}{% static "frontend/img/title_black.png" %}">
         <meta property="og:title" content="好食地圖 - Luscious Map">
         <meta property="og:description" content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。">
         <meta property="og:url" content="{{ request.build_absolute_uri }}">
