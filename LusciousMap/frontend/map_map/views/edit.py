@@ -224,13 +224,11 @@ def save_map_mark(request):
             place = LMMapPlace.objects.get(id__exact=request.POST['edit_place_id'], user__exact=user)
             edit_map_place(request, place)
             return JsonResponse(dict(success=True))
-            pass
         # 修改地點的地點
         elif len(request.POST['map_id']) == 0 and len(request.POST['edit_place_id']) > 0:
             place = LMMapPlace.objects.get(id__exact=request.POST['edit_place_id'], user__exact=user)
             edit_map_place(request, place)
             return JsonResponse(dict(success=True))
-            pass
 
         return JsonResponse(dict(success=False))
 
