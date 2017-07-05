@@ -1,0 +1,82 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+{% load account socialaccount %}
+
+{% block title %}好食地圖 Luscious Map - 註冊{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/css/index.css" %}">
+
+    <style>
+        ul {
+            margin-left: 0;
+            padding-left: 0;
+        }
+
+        li {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .facebook {
+            text-transform: uppercase;
+            font-size: 1.5em;
+            padding: 10px 50px 10px 50px;
+            border: solid 0px #c0c0c0;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            background: #3B5998;
+            color: white;
+            letter-spacing: 3px;
+        }
+
+        li :hover {
+            background: #568e98;
+            -webkit-transition: background-color 500ms linear;
+            -ms-transition: background-color 500ms linear;
+            transition: background-color 500ms linear;
+        }
+
+        input {
+            width:250px;
+            padding: 8px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            border: 1px solid #ccc !important
+        }
+    </style>
+
+{% endblock %}
+
+{% block body %}
+    <div class="w3-container" style="padding:31px 16px" id="home"></div>
+
+    <div class="w3-container" style="text-align: center;height:calc(70%);">
+        <br/><br/><br/><br/>
+
+        <img src="{% static "frontend/img/title_black.png" %}" style="width: 300px;">
+        <div style="margin-top:30px;width:100%; text-align: center;font-size: 1.5em;">
+            第一次登入，請確認資料下列資料喔。
+        </div>
+        <ul>
+            <form class="signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {% if redirect_field_value %}
+                    <input class="w3-input w3-border" type="hidden" name="{{ redirect_field_name }}"
+                           value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <button class="w3-button u-menu-btn" type="submit">送出</button>
+            </form>
+        </ul>
+
+        <br/><br/><br/><br/><br/><br/>
+    </div>
+    <div id="fb-root"></div>
+    <div id="fb-root"></div>
+
+    {% include '_footer.html' %}
+{% endblock %}
