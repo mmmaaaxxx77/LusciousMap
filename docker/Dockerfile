@@ -1,6 +1,6 @@
 # VERSION 1 - EDITION 1
 
-FROM mmmaaaxxx77/ubuntu-ml-django
+FROM mmmaaaxxx77/lusciousmap
 
 MAINTAINER johnny
 
