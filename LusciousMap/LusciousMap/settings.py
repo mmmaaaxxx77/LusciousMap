@@ -218,7 +218,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-SITE_ID = 1
+SITE_ID = 3
 
 #ACCOUNT_USER_MODEL_USERNAME_FIELD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
