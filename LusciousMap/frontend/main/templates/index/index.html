@@ -89,11 +89,13 @@
                 </span>
                             {% endcomment %}
                             &nbsp
-                            <span class="label c-color3" data-bind="text:country.long_name"></span>
-
-                            <span data-bind="foreach: tags">
-                                <span class="label c-color4" data-bind="text:name">台北市</span>
-                            </span>
+                            <br/>
+                            <div data-bind="" style="height: 29px;overflow: hidden;">
+                                <span class="label c-color3" data-bind="text:country.long_name"></span>
+                                <!-- ko foreach: tags -->
+                                    <span class="label c-color4" data-bind="text:name">台北市</span>
+                                <!-- /ko -->
+                            </div>
                         </div>
                         <a target="_self" data-bind="attr: { href: url()}">
                             <p class="w3-opacity">
