@@ -3,10 +3,10 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% load staticfiles %}
 
-{% block title %}{{ place.name }}{% endblock %}
+{% block title %} : {{ place.name }}{% endblock %}
 
 {% block meta %}
-    <meta name="title" content="好食地圖 - Luscious Map | {{ place.name }}">
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | {{ place.name }}">
     <meta name="description" content="{{ place.description }}">
     <meta name="keywords" content="{{ place.tags.all | join:"," }}">
 

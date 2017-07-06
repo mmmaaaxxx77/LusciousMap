@@ -1,10 +1,10 @@
 {% extends '_default.html' %}
 {% load staticfiles %}
 
-{% block title %}{{ map.map.name }}{% endblock %}
+{% block title %} : {{ map.map.name }}{% endblock %}
 
 {% block meta %}
-    <meta name="title" content="好食地圖 - Luscious Map | {{ map.map.name }}">
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | {{ map.map.name }}">
     <meta name="description" content="{{ map.map.description }}">
     <meta name="keywords" content="{{ map.map.tags.all | join:"," }}">
 
