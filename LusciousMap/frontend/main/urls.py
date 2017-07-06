@@ -21,7 +21,7 @@ from frontend.main.views import webplugin
 
 urlpatterns = [
     url(r'^$', views.index, name="index"),
-    url(r'google83bbd874881151b1.html ^$', TemplateView.as_view(template_name='google/google83bbd874881151b1.html')),
+    url(r'^google83bbd874881151b1.html ^$', TemplateView.as_view(template_name='google/google83bbd874881151b1.html')),
     url(r'^place/new/$', views.new_place, name="new_place"),
     url(r'^place/view/(?P<place_id>[\w\-]+)/$', views.place_view, name="place_view"),
     url(r'^map/view/(?P<map_id>[\w\-]+)/$', views.map_view, name="map_view"),
