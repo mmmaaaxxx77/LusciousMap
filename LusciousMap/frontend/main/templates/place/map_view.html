@@ -8,7 +8,8 @@
     <meta name="description" content="{{ map.map.description }}">
     <meta name="keywords" content="{{ map.map.tags.all | join:"," }}">
 
-    <meta property="og:image" content="http://{{ request.get_host }}{% url "get_photo" image_id=map.map.map_image.id %}">
+    <meta property="og:image"
+          content="http://{{ request.get_host }}{% url "get_photo" image_id=map.map.map_image.id %}">
     <meta property="og:title" content="好食地圖 - Luscious Map | {{ map.map.name }}">
     <meta property="og:description" content="{{ map.map.description }}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
@@ -38,6 +39,13 @@
         }
 
     </style>
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'MAPVIEW-{{ map.map.name }}:{{ map.map.id }}');
+    </script>
+    {# GA end #}
+
 {% endblock %}
 {% block mobilemenu %}
     <a href="#detail" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-tag"></i> &nbsp<span

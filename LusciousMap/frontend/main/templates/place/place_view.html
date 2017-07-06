@@ -38,6 +38,13 @@
             }
         }
     </style>
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'PLACEVIEW-{{ place.name }}:{{ place.id }}');
+    </script>
+    {# GA end #}
+
 {% endblock %}
 
 {% block mobilemenu %}

@@ -7,6 +7,13 @@
 
 {% block header %}
     <link rel="stylesheet" href="{% static "frontend/css/index.css" %}">
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'INDEX');
+    </script>
+    {# GA end #}
+
 {% endblock %}
 
 {% block body %}
@@ -73,12 +80,14 @@
                     </div>
                     <div class="w3-container">
                         <div class="card-info">
-                            <span class="pointer" data-bind="click:function(){clickRating($data.rating.good, $data.rating_good_url());}">
+                            <span class="pointer"
+                                  data-bind="click:function(){clickRating($data.rating.good, $data.rating_good_url());}">
                                 <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
                                 <span class="card-info-msg" data-bind="text:rating.good"></span>
                             </span>
                             &nbsp
-                            <span class="pointer" data-bind="click:function(){clickRating($data.rating.bad, $data.rating_bad_url());}">
+                            <span class="pointer"
+                                  data-bind="click:function(){clickRating($data.rating.bad, $data.rating_bad_url());}">
                                 <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
                                 <span class="card-info-msg" data-bind="text:rating.bad"></span>
                             </span>
@@ -93,7 +102,7 @@
                             <div data-bind="" style="height: 29px;overflow: hidden;">
                                 <span class="label c-color3" data-bind="text:country.long_name"></span>
                                 <!-- ko foreach: tags -->
-                                    <span class="label c-color4" data-bind="text:name">台北市</span>
+                                <span class="label c-color4" data-bind="text:name">台北市</span>
                                 <!-- /ko -->
                             </div>
                         </div>
@@ -430,8 +439,8 @@
 
                     var image_preload = [];
                     //for (i in data.place_photo) {
-                        ViewModel.photo_places.push(data.place_photo);
-                        image_preload.push(data.place_photo.photos[0].image_url + "?width=1280&height=653");
+                    ViewModel.photo_places.push(data.place_photo);
+                    image_preload.push(data.place_photo.photos[0].image_url + "?width=1280&height=653");
                     //}
 
                     //preloadImages(image_preload);
