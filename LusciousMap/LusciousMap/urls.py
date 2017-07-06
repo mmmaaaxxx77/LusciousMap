@@ -19,6 +19,7 @@ from django.contrib import admin, sitemaps
 from django.contrib.sitemaps.views import sitemap
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.views.generic import TemplateView
 
 from frontend.map_basic.models import LMPlace
 from frontend.map_map.models import LMMap
@@ -69,6 +70,7 @@ sitemaps = {
 }
 
 urlpatterns = [
+    url(r'^google83bbd874881151b1.html$', TemplateView.as_view(template_name='google/google83bbd874881151b1.html')),
     url(r'^admin/', admin.site.urls),
     # url(r'', include('frontend.main.urls')),
     url(r'^accounts/', include('allauth.urls')),
