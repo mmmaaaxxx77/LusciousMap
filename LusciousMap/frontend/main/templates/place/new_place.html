@@ -209,13 +209,15 @@
 
         });
 
+        var service = null;
         // search
         $("#search").autocomplete({
             //source: "{% url "search_place" %}",
             maxLength: 10,
             source: function (request, response) {
 
-                service = new google.maps.places.PlacesService(map.map);
+                if(!service)
+                    service = new google.maps.places.PlacesService(map.map);
 
                 google_success = function (results, status) {
 

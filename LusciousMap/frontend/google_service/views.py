@@ -12,13 +12,18 @@ def find_enable_key(type):
     keys = ServiceKey.objects.filter(type__exact=type).all()
     key = random.choice(list(keys))
 
-    now_month = datetime.date.today().month
-    last_month = key.last_month_key_get.month
+    now_day = datetime.date.today().day
+    last_day = key.last_month_key_get.day
 
-    if now_month != last_month:
+    if type == 0:
+        limit = 9000
+    else:
+        limit = 1999
+
+    if now_day != last_day:
         key.disable = False
         key.count = 0
-    elif now_month == last_month and key.count >= 25000:
+    elif now_day == last_day and key.count >= limit:
         key.disable = True
         key.save()
         key = find_enable_key(type)
