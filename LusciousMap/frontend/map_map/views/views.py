@@ -81,13 +81,13 @@ def init_recommend_list(request):
     if request.method == 'GET':
         result = []
         search_place = LMPlace.objects.filter(user__isnull=False, display__exact=True).order_by(
-            "-google_rating").all()
+            "-google_rating").annotate(dcount=Count('name')).all()
         """
         search_mapplace = LMMapPlace.objects.filter(user__isnull=False, display__exact=True).order_by(
             "-place__rating__good")
         """
         search_mapmap = LMMap.objects.filter(user__isnull=False, display__exact=True).order_by(
-            "-rating__good").all()
+            "-rating__good").annotate(dcount=Count('name')).all()
 
         list_search_place = [h.as_detail() for h in list(search_place)]
         #list_search_mapplace = [h.as_detail() for h in list(search_mapplace)]
