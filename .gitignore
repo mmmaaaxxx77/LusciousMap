@@ -58,3 +58,16 @@ target/
 
 # Pycharm
 .idea/
+
+# Pycharm
+.idea/
+*/.idea/
+
+.pypirc
+*.pyc
+
+# vtt
+celerybeat.pid
+*.mp3
+*.sql
+django
