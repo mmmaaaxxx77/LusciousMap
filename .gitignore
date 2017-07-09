@@ -71,3 +71,4 @@ celerybeat.pid
 *.mp3
 *.sql
 django
+*.png
