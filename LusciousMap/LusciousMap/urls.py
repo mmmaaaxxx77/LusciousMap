@@ -74,6 +74,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     # url(r'', include('frontend.main.urls')),
     url(r'^accounts/', include('allauth.urls')),
+    # api
+    url(r'^api/', include('api.api.urls')),
+    # sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap')
 ]

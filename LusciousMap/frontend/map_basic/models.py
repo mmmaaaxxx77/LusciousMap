@@ -119,9 +119,12 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     Deletes file from filesystem
     when corresponding `MediaFile` object is deleted.
     """
-    if instance.image:
-        if os.path.isfile(instance.image.path):
-            os.remove(instance.image.path)
+    try:
+        if instance.image:
+            if os.path.isfile(instance.image.path):
+                os.remove(instance.image.path)
+    except:
+        print("instance.image")
 
 
 class LMRating(models.Model):
@@ -244,8 +247,11 @@ class LMPlace(models.Model):
 @receiver(models.signals.post_delete, sender=LMPlace)
 def post_delete_lmplace_on_delete(sender, instance, **kwargs):
 
-    if instance.rating:
-        instance.rating.delete()
+    try:
+        if instance.rating:
+            instance.rating.delete()
+    except:
+        print("no instance.rating")
 
     """
     for mpaplace in LMMapPlace.objects.filter(place__exact=instance):
@@ -256,13 +262,20 @@ def post_delete_lmplace_on_delete(sender, instance, **kwargs):
 @receiver(models.signals.pre_delete, sender=LMPlace)
 def pre_delete_lmplace_on_delete(sender, instance, **kwargs):
 
-    for photo in instance.photos.all():
-        if os.path.isfile(photo.image.path):
-            os.remove(photo.image.path)
-        photo.delete()
-
+    try:
+        for photo in instance.photos.all():
+            if os.path.isfile(photo.image.path):
+                os.remove(photo.image.path)
+            photo.delete()
+    except:
+        print("delete photo exception")
+    try:
         if instance.map_image is not None:
             if os.path.isfile(instance.map_image.image.path):
                 os.remove(instance.map_image.image.path)
             instance.map_image.delete()
+    except:
+        print("delete map photo exception")
+
+
     #instance.photos.all().delete()

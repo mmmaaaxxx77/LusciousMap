@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'frontend.map_basic',
     'frontend.map_map',
     'frontend.google_service',
+    'api.api',
     # all auth
     'django.contrib.sites',
     'allauth',
