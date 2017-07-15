@@ -73,3 +73,6 @@ celerybeat.pid
 django
 *.png
 *.jpg
+
+*/migrations/
+migrations/
