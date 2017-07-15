@@ -67,8 +67,10 @@
                 <a href="{% url "index" %}#map" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-map-o"></i>
                     &nbsp好食地圖</a>
+            {% comment %}
                 <a href="#teach" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-book"></i>
                     &nbsp地圖教學</a>
+            {% endcomment %}
                 <a href="{% url "column_index" %}" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
                 {% comment %}
@@ -114,8 +116,10 @@
     <br>
     <a href="{% url "index" %}#map" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-map-o"></i>
         &nbsp好食地圖</a>
+    {% comment %}
     <a href="{% url "index" %}#teach" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-book"></i>
         &nbsp地圖教學</a>
+    {% endcomment %}
     <a href="{% url "column_index" %}" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
     {% comment %}
     <a href="#work" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-language"></i> &nbsp好食直播</a>
