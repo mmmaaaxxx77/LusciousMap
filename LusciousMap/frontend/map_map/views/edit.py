@@ -267,7 +267,7 @@ def get_map_static_image(geo_list):
     url = "https://maps.googleapis.com/maps/api/staticmap?scale=2&zoom=14&size=500x500&maptype=roadmap"
     url += "&center={},{}".format(geo_list[0].place.geo_lat, geo_list[0].place.geo_lng)
     for geo in geo_list:
-        url += "&markers=color:blue%7C{},{}".format(geo.place.geo_lat, geo.place.geo_lng)
+        url += "&markers=color:red%7C{},{}".format(geo.place.geo_lat, geo.place.geo_lng)
     url += "&key={}".format(service_key_getter(1))
 
     filename = "{}.png".format(uuid.uuid4())
