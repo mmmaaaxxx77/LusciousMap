@@ -19,6 +19,10 @@ def index(request):
 
 def detail(request, column_id):
     count = LMColumn.objects.count()
+    if count == 0:
+        return render(request, "column/detail.html", dict(column=[],
+                                                          recommend_columns=[]))
+
     recommend_columns = random.sample(list(LMColumn.objects.filter(display__exact=True).all()), count if count < 5 else 5)
     column = LMColumn.objects.get(id__exact=column_id)
 
