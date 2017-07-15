@@ -71,8 +71,8 @@ celerybeat.pid
 *.mp3
 *.sql
 django
-media/photos/*.png
-media/photos/*.jpg
+*/media/photos/*.png
+*/media/photos/*.jpg
 
 */migrations/
 migrations/
