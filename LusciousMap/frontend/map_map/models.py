@@ -25,6 +25,12 @@ class LMMapPlace(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.DO_NOTHING)
 
     def as_detail(self):
+
+        if self.photos.count() == 0:
+            photos = [].extend([p.as_json() for p in self.place.photos.all()])
+        else:
+            photos = [h.as_json() for h in list(self.photos.all())]
+
         return dict(
             model_type="MAPPLACE",
             model_type_ch="地點",
@@ -33,7 +39,7 @@ class LMMapPlace(models.Model):
             display=self.display,
             description=self.description,
             place_type=self.place.place_type.as_json(),
-            photos=[h.as_json() for h in list(self.photos.all())],
+            photos=photos,
             rating=self.place.rating.as_json(),
             country=self.place.country.as_json(),
             geo_lat=self.place.geo_lat,
