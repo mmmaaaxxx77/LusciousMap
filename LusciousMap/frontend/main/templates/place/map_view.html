@@ -412,7 +412,7 @@
                 html = '<p>' + self.place.place.name() + '</p>';
 
                 if (self.place.place.photos().length > 0) {
-                    var photo_url = self.place.place.photos()[0].image_url;
+                    var photo_url = self.place.place.photos()[0].image_url();
                     html += '<img src="' + photo_url + '" style="max-width:200px;">';
                 }
                 html += '<br/><a target="_blank" href="' + self.place.place.g_map_url() + '">Googld Map開啟</a>'
