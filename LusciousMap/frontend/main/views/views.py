@@ -62,6 +62,11 @@ def place_view(request, place_id):
         place = place_o.place
         place.name = place_o.name
         place.description = place_o.description
+        if place.photos.count() == 0:
+            photos = [].extend([p.as_json() for p in place.place.photos.all()])
+        else:
+            photos = [h.as_json() for h in list(place.photos.all())]
+        place.photos = photos
         #place.tags = place_o.tags
 
     return render(request, "place/place_view.html", dict(map_key=service_key_getter(0), place=place))
