@@ -10,6 +10,9 @@ from frontend.map_basic.models import LMTag
 
 def index(request):
     tmp = []
+    count = LMColumn.objects.count()
+    if count == 0:
+        return render(request, "column/index.html", dict(tags=[]))
     for ob in LMColumn.objects.all():
         tmp = set(tmp).union(ob.tags.all())
 
