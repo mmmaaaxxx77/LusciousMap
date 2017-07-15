@@ -25,8 +25,10 @@ def detail(request, column_id):
     if count == 0:
         return render(request, "column/detail.html", dict(column=[],
                                                           recommend_columns=[]))
-
-    recommend_columns = random.sample(list(LMColumn.objects.filter(display__exact=True).all()), count if count > 5 else 5)
+    elif count == 1:
+        recommend_columns = list(LMColumn.objects.filter(display__exact=True).all())
+    else:
+        recommend_columns = random.sample(list(LMColumn.objects.filter(display__exact=True).all()), count if count > 5 else 5)
     column = LMColumn.objects.get(id__exact=column_id)
 
     return render(request, "column/detail.html", dict(column=column,
