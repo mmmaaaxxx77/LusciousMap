@@ -51,13 +51,6 @@ def search_place_list(request):
                                               (Q(name__contains=search_str) |
                                                Q(description__contains=search_str) |
                                                Q(tags__name__contains=search_str))).annotate(dcount=Count('name')).all()
-        """
-        search_mapplace = LMMapPlace.objects.filter(Q(user__isnull=False) &
-                                                    Q(display__exact=True) &
-                                                    (Q(name__contains=search_str) |
-                                                     Q(description__contains=search_str) |
-                                                     Q(tags__name__contains=search_str))).annotate(dcount=Count('name')).all()
-        """
         search_mapmap = LMMap.objects.filter(Q(user__isnull=False) &
                                              Q(display__exact=True) &
                                              (Q(name__contains=search_str) |
@@ -81,20 +74,13 @@ def init_recommend_list(request):
     if request.method == 'GET':
         result = []
         search_place = LMPlace.objects.filter(Q(user__isnull=False) & Q(display__exact=True)).annotate(dcount=Count("name")).all()
-        """
-        search_mapplace = LMMapPlace.objects.filter(user__isnull=False, display__exact=True).order_by(
-            "-place__rating__good")
-        """
         search_mapmap = LMMap.objects.filter(Q(user__isnull=False) & Q(display__exact=True)).annotate(dcount=Count('name')).all()
 
         list_search_place = [h.as_detail() for h in list(search_place)]
-        #list_search_mapplace = [h.as_detail() for h in list(search_mapplace)]
         list_search_mapmap = [h.as_detail() for h in list(search_mapmap)]
 
         result.extend(list_search_place)
-        #result.extend(list_search_mapplace)
         result.extend(list_search_mapmap)
-        #random.shuffle(result)
         result = sorted(result, key=lambda place: place['rating']['good'], reverse=True)
         page = request.GET["page"] if "page" in request.GET.keys() else 1
         size = request.GET["size"] if "size" in request.GET.keys() else 8

@@ -231,8 +231,15 @@ def get_google_photo(width, height, photo_reference):
     map_image_path = settings.MEDIA_ROOT + "/map_images/" + filename
 
     r = urllib.request.urlretrieve(url, map_image_path)
+
+    small_photo = Image.open(map_image_path)
+    w, h = small_photo.size
+    if w >= 1600 or h>= 1600:
+        small_photo = small_photo.resize((w // 2, h // 2))
+        small_photo.save(map_image_path, "PNG")
+
     map_image = LMPhoto()
-    map_image.image.save(filename, File(open(map_image_path,'rb')))
+    map_image.image.save(filename, File(open(map_image_path, 'rb')))
     map_image.save()
 
     if os.path.isfile(map_image_path):

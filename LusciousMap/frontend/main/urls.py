@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
-from frontend.main.views import views
+from frontend.main.views import views, column
 from frontend.main.views import webplugin
 
 urlpatterns = [
@@ -32,4 +32,8 @@ urlpatterns = [
     # webplugin
     url(r'^webplugin/map/(?P<map_id>[\w\-]+)/$', webplugin.map, name="webplugin_map"),
     url(r'^webplugin/place/(?P<place_id>[\w\-]+)/$', webplugin.place, name="webplugin_place"),
+    # column
+    url(r'^column/$', column.index, name="column_index"),
+    url(r'^column/search/$', column.search_column, name="column_search"),
+    url(r'^column/detail/(?P<column_id>[\w\-]+)/$', column.detail, name="column_detail"),
 ]

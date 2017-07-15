@@ -1,0 +1,95 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+
+{% block title %} : 好食專欄 : {{ column.title }}{% endblock %}
+
+{% block meta %}
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食專欄 | {{ column.title }}">
+    <meta name="description" content="{{ column.short_description }}">
+    <meta name="keywords" content="{{ column.tags.all | join:"," }}">
+
+    <meta property="og:image"
+          content="http://{{ request.get_host }}{% url "get_photo" image_id=column.cover_photo.id %}">
+    <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食專欄 | {{ column.title }}">
+    <meta property="og:description" content="{{ column.short_description }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image:width" content="{{ column.cover_photo.image.width }}">
+    <meta property="og:image:height" content="{{ column.cover_photo.image.height }}">
+{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/css/column_detail.css" %}">
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'COLUMN_DETAIL-{{ column.title }}:{{ column.id }}');
+    </script>
+    {# GA end #}
+
+{% endblock %}
+
+{% block body %}
+    <div class="w3-container" style="padding:40px 16px" id="home">
+    </div>
+    <div class="w3-container">
+        <div class="w3-col l8">
+            <div class="w3-container article">
+                <h2 style="padding-left: 5px;">{{ column.title }}</h2>
+                <h7 style="color: #666;padding-left: 5px;">{{ column.updateDate|date:"Y M d D" }}</h7>
+                <div>
+                    {% for tag in column.tags.all %}
+                    <div class="label">{{ tag.name }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="w3-container article article-content" id="article">
+                {% autoescape off %}
+                    {{ column.content }}
+                {% endautoescape %}
+            </div>
+        </div>
+        <div class="w3-container w3-col l4">
+            <h5 style="color: #606060;">推薦專欄</h5>
+            {% for detail in recommend_columns %}
+                <div class="recommand" style="color: #787878;margin-top: 10px;margin-bottom: 10px;">
+
+                    <a href="{% url "column_detail" column_id=detail.id %}">
+                        <div class="w3-row-padding" style="padding:10px 5px 10px 5px;">
+                            <div class="w3-col m12">
+                                <img class="w3-image w3-round-large"
+                                     src="{{ detail.cover_photo.image_url }}?width=700&height=150"
+                                     alt="{{ detail.title }}" width="700" height="150">
+                            </div>
+                            <div class="w3-col m12">
+                                <h5>{{ detail.title }}</h5>
+                                <div>
+                                    {{ detail.short_description }}
+                                    <br/>
+                                </div>
+                                <div style="text-align: right;">
+                                    <small class="read-more">[閱讀更多]</small>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% if not forloop.last %}
+                    <div style="border-top: solid 1px #CCC;"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="w3-container" style="padding:30px 16px">
+    </div>
+    {% include '_footer.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <script>
+
+
+    </script>
+{% endblock %}

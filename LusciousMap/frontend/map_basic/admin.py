@@ -6,6 +6,7 @@ from django.contrib.admin import DateFieldListFilter
 from frontend.map_basic.models import LMCountry, LMCity, LMAttraction, LMPhoto, LMRating, LMPlaceType, LMPlace, LMTag
 
 
+
 def make_all_display(modeladmin, request, queryset):
     queryset.update(display=True)
 make_all_display.short_description = "Mark selected place display"

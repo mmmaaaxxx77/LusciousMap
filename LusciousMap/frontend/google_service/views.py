@@ -21,6 +21,7 @@ def find_enable_key(type):
         limit = 1999
 
     if now_day != last_day:
+        key.last_month_key_get = datetime.date.today()
         key.disable = False
         key.count = 0
     elif now_day == last_day and key.count >= limit:

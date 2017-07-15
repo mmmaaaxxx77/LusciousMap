@@ -1,0 +1,201 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+
+{% block title %} : 好食專欄{% endblock %}
+
+{% block meta %}
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食專欄">
+    <meta name="description" content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。網羅各地美食，在地化專欄美食整理！還在想去哪裡有美食嗎？快來好食專欄！">
+    <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,專欄,好食專欄,小吃,餐廳,夜市,鬧區,分享,景點">
+
+    <meta property="og:image" content="http://{{ request.get_host }}{% static "frontend/img/title_black.png" %}">
+    <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食專欄">
+    <meta property="og:description" content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。網羅各地美食，在地化專欄美食整理！還在想去哪裡有美食嗎？快來好食專欄！">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="180">
+{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/column_index.css" %}">
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'COLUMN');
+    </script>
+    {# GA end #}
+
+{% endblock %}
+
+{% block body %}
+    <div class="w3-container" style="padding:40px 16px" id="home">
+    </div>
+    <div class="w3-container" id="search_block" style="padding-top: 10px;padding-bottom: 10px;">
+        <div class="w3-center w3-large">
+            <div class="container-4" style="margin: 0 auto">
+                <input type="search" id="search" placeholder="搜尋好食專欄文章 ..."/>
+                <button class="icon" data-bind="click:clickSearch"><i class="fa fa-search"></i></button>
+                <div id="hot_word" class="w3-row-padding" style="padding: 5px;">
+                    <div class="label-title">
+                        <small>
+                            <span style="color: #666;">熱門：</span>
+                            {% for tag in tags %}
+                                <span class="hot-word pointer" data-bind="click:function(){clickHotTag('{{ tag.name }}');}">#{{ tag.name }}</span>
+                            {% endfor %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w3-container" id="articles">
+        <!-- ko template: {foreach: columns.columns} -->
+        <div class="w3-row-padding" style="padding:10px 5px 10px 5px;">
+            <div class="w3-col m6">
+                <img class="w3-image w3-round-large"
+                     src=""
+                     data-bind="attr:{src:cover_photo.image_url() + '?width=700&height=300'}"
+                     width="700" height="300">
+            </div>
+            <div class="w3-col m6">
+                <a data-bind="attr:{href:url()}"><h3 data-bind="text:title"></h3></a>
+                <small style="color: #666;">更新日期 <span data-bind="text:update_str"></span></small>
+                <div>
+                    <!-- ko template: {foreach: tags} -->
+                    <div class="label" data-bind="text:name"></div>
+                    <!-- /ko -->
+                </div>
+                <br/>
+                <div data-bind="text:short_description">
+                </div>
+                <div style="text-align: right;">
+                    <a data-bind="attr:{href:url()}">
+                        <small style="color: #666;">[完整內容]</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- ko if: $index() != ($parent.columns.columns().length - 1) -->
+        <div style="border-top: solid 1px #CCC;margin-top: 10px;margin-bottom: 10px;"></div>
+        <!-- /ko -->
+
+        <!-- /ko -->
+    </div>
+    {% include '_footer.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <script>
+
+        $(function () {
+            $('#search').keypress(function (e) {
+                if (e.keyCode == 13)
+                    ViewModel.clickSearch();
+            });
+            // search
+            $("#search").autocomplete({
+                maxLength: 10,
+                source: function (request, response) {
+                    list_data = []
+                    lm_success = function (data, status) {
+                        data = data.columns;
+                        for (var i = 0; i < data.length; i++) {
+                            d = data[i];
+                            list_data[list_data.length] = d;
+                        }
+
+                        response(list_data, status);
+                    }
+                    // lm ajax
+                    $.getJSON("{% url "column_search" %}", {
+                        term: request.term
+                    }, lm_success);
+
+                },
+                change: function (event, ui) {
+                    ViewModel.search.term = $("#search").val();
+                },
+                focus: function (event, ui) {
+
+                    $("#search").val(ui.item.title);
+                    return false;
+                },
+                select: function (event, ui) {
+                    ViewModel.search.term = ui.item.title;
+                    ViewModel.clickSearch();
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<div><b>" + item.title + "</b><br><small>" + "</small></div>")
+                    .appendTo(ul);
+            };
+        });
+
+        var ViewModel = new function () {
+            self = this;
+
+            this.search = {
+                term: "",
+                total: ko.observable(0),
+                page: ko.observable(1)
+            }
+
+            this.columns = {
+                columns: ko.observableArray([]),
+                page: 1,
+                total: 0,
+                init: function () {
+                    $.getJSON("{% url "column_search" %}?page=" + self.search.page(),
+                        function (data, status) {
+                            if (status == 'success') {
+                                ViewModel.search.total(data.total);
+                                ViewModel.search.page(data.page);
+                                data = data.columns;
+                                model = ViewModel.columns.columns;
+                                for (i in data) {
+                                    model.push(ko.mapping.fromJS(data[i]));
+                                }
+                            }
+                        });
+                }
+            }
+
+            this.columns.init();
+
+            this.clickSearch = function () {
+                ViewModel.search.term = $("#search").val()
+                ViewModel.search.total(0);
+                ViewModel.search.page(1);
+
+                $.getJSON("{% url "column_search" %}", {
+                    term: ViewModel.search.term
+                }, function (data, status) {
+                    ViewModel.search.total(data.totalPages * 1);
+                    ViewModel.search.page(data.page * 1);
+
+                    list = ViewModel.columns.columns;
+                    list([]);
+                    for (i in data.columns) {
+                        list.push(ko.mapping.fromJS(data.columns[i]));
+                    }
+                });
+            }
+            this.clickHotTag = function(name){
+                $("#search").val(name);
+                ViewModel.clickSearch();
+            }
+        }
+
+        $(function () {
+            ko.applyBindings(ViewModel);
+        });
+    </script>
+{% endblock %}

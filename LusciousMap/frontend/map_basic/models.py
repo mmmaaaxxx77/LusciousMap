@@ -10,6 +10,9 @@ from django.urls import reverse
 class LMTag(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=25)
+
+    hide = models.BooleanField(default=False)
+
     createDate = models.DateTimeField(auto_now_add=True)
 
     createUser = models.ForeignKey(User, null=True, blank=True, on_delete=models.DO_NOTHING)
