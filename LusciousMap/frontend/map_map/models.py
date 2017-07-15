@@ -39,7 +39,7 @@ class LMMapPlace(models.Model):
             display=self.display,
             description=self.description,
             place_type=self.place.place_type.as_json(),
-            photos=photos,
+            photos=[h.as_json() for h in list(self.photos.all())],
             rating=self.place.rating.as_json(),
             country=self.place.country.as_json(),
             geo_lat=self.place.geo_lat,
