@@ -1,0 +1,43 @@
+.article {
+    padding: 0.01em 3em;
+}
+
+.label {
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: 12px;
+    padding: 2px 5px 2px 5px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #d65454;
+    color: #fff;
+    float: left;
+    opacity: 0.7;
+}
+
+.article-content {
+    border-right: solid 1px #CCC;
+}
+
+.recommand:hover {
+    background-color: #f0ffea;
+}
+
+.read-more:hover{
+    text-decoration:underline;
+}
+
+@media (max-width: 993px) {
+    .article {
+        padding: 0.01em 0.1em;
+    }
+
+    .article-content {
+        border-right: solid 0px #CCC;
+        border-bottom: solid 1px #1d75b3;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+}
