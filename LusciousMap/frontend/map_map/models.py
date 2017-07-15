@@ -25,9 +25,9 @@ class LMMapPlace(models.Model):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.DO_NOTHING)
 
     def as_detail(self):
-
+        photos = []
         if self.photos.count() == 0:
-            photos = [].extend([p.as_json() for p in list(self.place.photos.all())])
+            photos.extend([p.as_json() for p in list(self.place.photos.all())])
         else:
             photos = [h.as_json() for h in list(self.photos.all())]
 
