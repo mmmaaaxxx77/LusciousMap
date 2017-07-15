@@ -21,6 +21,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from frontend.column.models import LMColumn
 from frontend.map_basic.models import LMPlace
 from frontend.map_map.models import LMMap
 
@@ -58,12 +59,27 @@ class StaticViewSitemap(sitemaps.Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        return ['index']
+        return ['index', 'column_index']
 
     def location(self, item):
         return reverse(item)
 
+
+class ColumnSitemap(sitemaps.Sitemap):
+    priority = 0.5
+    changefreq = 'daily'
+
+    def items(self):
+        return LMColumn.objects.filter(display__exact=True)
+
+    def lastmod(self, obj):
+        return obj.updateDate
+
+    def location(self, item):
+        return reverse('column_detail', args=[item.id])
+
 sitemaps = {
+    'column': ColumnSitemap,
     'map': LMMapSitemap,
     'place': LMPlaceSitemap,
     'static': StaticViewSitemap,
