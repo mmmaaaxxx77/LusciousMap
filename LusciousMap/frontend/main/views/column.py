@@ -21,11 +21,11 @@ def index(request):
 
 
 def detail(request, column_id):
-    count = LMColumn.objects.count()
+    count = LMColumn.objects.filter(display__exact=True).count()
     if count == 0:
         return render(request, "column/detail.html", dict(column=[],
                                                           recommend_columns=[]))
-    elif count == 1:
+    elif count == 1 or count < 5:
         recommend_columns = list(LMColumn.objects.filter(display__exact=True).all())
     else:
         recommend_columns = random.sample(list(LMColumn.objects.filter(display__exact=True).all()), count if count > 5 else 5)
