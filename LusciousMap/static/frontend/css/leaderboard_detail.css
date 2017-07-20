@@ -1,0 +1,151 @@
+.article {
+    padding: 0.01em 3em;
+}
+
+.label {
+    margin-bottom: 2px;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-size: 12px;
+    padding: 2px 5px 2px 5px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #d65454;
+    color: #fff;
+    float: left;
+    opacity: 0.7;
+}
+
+.article-content {
+    border-right: solid 1px #CCC;
+}
+
+.recommand:hover {
+    background-color: #f0ffea;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.lb-column-more {
+    border: solid 1px #969696;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+}
+
+.lb-column-more:hover {
+    background-color: #fff;
+    border: solid 1px #c3c3c3;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.lb-column-outer {
+    border: solid 1px #bebebe;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.lb-column {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: url("http://tw.lusciousmap.com/zh-hant/photo/04e2b6ed-2ccb-42bb-8241-82dbd75d5a66/?width=700&height=300") center bottom no-repeat;
+    /*
+    background: linear-gradient(left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url("http://tw.lusciousmap.com/zh-hant/photo/04e2b6ed-2ccb-42bb-8241-82dbd75d5a66/?width=700&height=300") center bottom no-repeat;
+    background: -moz-linear-gradient(left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url("http://tw.lusciousmap.com/zh-hant/photo/04e2b6ed-2ccb-42bb-8241-82dbd75d5a66/?width=700&height=300") center bottom no-repeat;
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0)), url("http://tw.lusciousmap.com/zh-hant/photo/04e2b6ed-2ccb-42bb-8241-82dbd75d5a66/?width=700&height=300") center bottom no-repeat;
+    */
+}
+
+.radius-ball {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.lb-column:hover {
+    /*background: rgba(227, 246, 255, 0);*/
+}
+
+.column-number {
+    text-align: center;
+    font-weight: bold;
+    color: #333333;
+}
+
+.column-title {
+    color: #333333;
+}
+
+.column-count {
+    font-size: 1.1em;
+}
+
+.comment-g-dialog-btn {
+    background-color: #0F74A8;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.comment-b-dialog-btn {
+    background-color: #BD4B47;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.comment-g-dialog-btn:hover {
+    background-color: #118ecd;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.comment-b-dialog-btn:hover {
+    background-color: #e15551;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+@media (max-width: 993px) {
+    .column-count {
+        font-size: 0.8em;
+    }
+
+    .column-number {
+        font-size: 1.2em;
+    }
+
+    .column-title {
+        font-size: 1.2em;
+    }
+
+    .lb-column {
+
+    }
+
+    .article {
+        padding: 0.01em 0.1em;
+    }
+
+    .article-content {
+        border-right: solid 0px #CCC;
+        border-bottom: solid 1px #1d75b3;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+    }
+}

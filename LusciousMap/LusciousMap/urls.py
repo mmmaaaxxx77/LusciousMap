@@ -22,6 +22,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from frontend.column.models import LMColumn
+from frontend.main.views import webplugin
 from frontend.map_basic.models import LMPlace
 from frontend.map_map.models import LMMap
 
@@ -94,7 +95,10 @@ urlpatterns = [
     url(r'^api/', include('api.api.urls')),
     # sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap')
+        name='django.contrib.sitemaps.views.sitemap'),
+    # webplugin
+    url(r'^webplugin/leaderboard/positive/(?P<place_id>[\w\-]+)/$', webplugin.leaderboard_positive_place, name="webplugin_leaderplace_positive"),
+    url(r'^webplugin/leaderboard/negative/(?P<place_id>[\w\-]+)/$', webplugin.leaderboard_negative_place, name="webplugin_leaderplace_negative"),
 ]
 
 urlpatterns += i18n_patterns(

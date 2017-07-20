@@ -1,0 +1,284 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>好食地圖 Luscious Map</title>
+
+    <link rel="Shortcut Icon" type="image/x-icon" href="{% static "frontend/img/lusciousmap.ico" %}"/>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knockout-3.4.2.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <style>
+        .thumbnail {
+            padding: 0px;
+        }
+
+        .panel {
+            position: relative;
+        }
+
+        .panel > .panel-heading:after, .panel > .panel-heading:before {
+            position: absolute;
+            top: 11px;
+            left: -16px;
+            right: 100%;
+            width: 0;
+            height: 0;
+            display: block;
+            content: " ";
+            border-color: transparent;
+            border-style: solid solid outset;
+            pointer-events: none;
+        }
+
+        .panel > .panel-heading:after {
+            border-width: 7px;
+            margin-top: 1px;
+            margin-left: 2px;
+        }
+
+        .panel > .panel-heading:before {
+            border-width: 8px;
+        }
+
+        /**/
+        body {
+            background: #fafafa;
+        }
+
+        .widget-area.blank {
+            background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            -ms-box-shadow: none;
+            -o-box-shadow: none;
+            box-shadow: none;
+        }
+
+        body .no-padding {
+            padding: 0;
+        }
+
+        .widget-area {
+            background-color: #fff;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -ms-border-radius: 4px;
+            -o-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+            -moz-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+            -ms-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+            -o-box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.05);
+            float: left;
+            margin-top: 30px;
+            padding: 25px 30px;
+            position: relative;
+            width: 100%;
+        }
+
+        .status-upload {
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -ms-border-radius: 4px;
+            -o-border-radius: 4px;
+            border-radius: 4px;
+            float: left;
+            width: 100%;
+        }
+
+        .status-upload form {
+            float: left;
+            width: 100%;
+        }
+
+        .status-upload form textarea {
+            background: none repeat scroll 0 0 #fff;
+            border: medium none;
+            -webkit-border-radius: 4px 4px 0 0;
+            -moz-border-radius: 4px 4px 0 0;
+            -ms-border-radius: 4px 4px 0 0;
+            -o-border-radius: 4px 4px 0 0;
+            border-radius: 4px 4px 0 0;
+            color: #777777;
+            float: left;
+            font-family: Lato;
+            font-size: 14px;
+            height: 142px;
+            letter-spacing: 0.3px;
+            padding: 20px;
+            width: 100%;
+            resize: vertical;
+            outline: none;
+            border: 1px solid #F2F2F2;
+        }
+
+        .status-upload ul {
+            float: left;
+            list-style: none outside none;
+            margin: 0;
+            padding: 0 0 0 15px;
+            width: auto;
+        }
+
+        .status-upload ul > li {
+            float: left;
+        }
+
+        .status-upload ul > li > a {
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            -ms-border-radius: 4px;
+            -o-border-radius: 4px;
+            border-radius: 4px;
+            color: #777777;
+            float: left;
+            font-size: 14px;
+            height: 30px;
+            line-height: 30px;
+            margin: 10px 0 10px 10px;
+            text-align: center;
+            -webkit-transition: all 0.4s ease 0s;
+            -moz-transition: all 0.4s ease 0s;
+            -ms-transition: all 0.4s ease 0s;
+            -o-transition: all 0.4s ease 0s;
+            transition: all 0.4s ease 0s;
+            width: 30px;
+            cursor: pointer;
+        }
+
+        .status-upload ul > li > a:hover {
+            background: none repeat scroll 0 0 #606060;
+            color: #fff;
+        }
+
+        .status-upload form button {
+            float: right;
+        }
+
+        .dropdown > a > span.green:before {
+            border-left-color: #2dcb73;
+        }
+
+        .status-upload form button > i {
+            margin-right: 7px;
+        }
+
+        .status-upload form textarea:focus {
+            border: 1px solid #5bc0de;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="widget-area no-padding blank">
+                <div class="status-upload">
+                    <form>
+                        <textarea id="new_comment" placeholder="請輸入訊息..."></textarea>
+                        <button id="comment_submit" class="btn btn-default">新增留言</button>
+                    </form>
+                </div><!-- Status Upload  -->
+            </div><!-- Widget Area -->
+        </div>
+    </div>
+    <br/>
+    <!-- ko template: {foreach: comments.comments} -->
+    <div class="row">
+        <div class="col-xs-2" style="padding-right:0px;">
+            <div class="thumbnail">
+                <img class="img-responsive user-photo" data-bind="attr:{src:user.fb_profile_pic_url}"
+                     style="width: 50px; height: 50px;">
+            </div><!-- /thumbnail -->
+        </div><!-- /col-sm-1 -->
+
+        <div class="col-xs-10">
+            <div class="panel {{ panel_css }}">
+                <div class="panel-heading">
+                    <strong data-bind="text:user.username"></strong>
+                    &nbsp;
+                    <small><span class="text-muted" data-bind="text:create_date_str"></span></small>
+                    <small data-bind="visible: user.id() == {{ user.id }}">  |  <span style="cursor: pointer;" data-bind="click:function(){showEditer($data);}">[修改]</span></small>
+                </div>
+                <div class="panel-body" data-bind="html:comment_str, attr:{id:id()+'-body'}">
+                </div><!-- /panel-body -->
+                <div class="panel-body" data-bind="attr:{id:id()+'-edit'}" style="display: none;">
+                    <div class="widget-area no-padding blank">
+                        <div class="status-upload">
+                            <form method="post" action="" data-bind="attr:{action:save_url}">
+                                <textarea name="comment_text" placeholder="請輸入訊息..." data-bind="text:comment"></textarea>
+                                <button class="btn btn-default btn-sm" data-bind="click:function(){hideEditer($data);}">取消</button>
+                                <button type="submit" class="btn btn-default btn-sm">儲存</button>
+                            </form>
+                        </div><!-- Status Upload  -->
+                    </div><!-- Widget Area -->
+                </div>
+            </div><!-- /panel panel-default -->
+        </div><!-- /col-sm-5 -->
+    </div><!-- /row -->
+    <!-- /ko -->
+</div><!-- /container -->
+
+</body>
+
+<script>
+
+    var ViewModel = new function () {
+        self = this;
+        this.comments = {
+            comments: ko.observableArray([]),
+            init: function () {
+                $.getJSON("{{ comments_list_url }}",
+                    function (data, status) {
+                        data = data.comments;
+                        model = ViewModel.comments.comments;
+                        for (i in data) {
+                            model.push(ko.mapping.fromJS(data[i]));
+                        }
+                    });
+            }
+        }
+        self.comments.init();
+
+    }
+
+    function showEditer(data){
+        $("#"+data.id()+"-edit").show();
+        $("#"+data.id()+"-body").hide();
+    }
+    
+    function hideEditer(data) {
+        $("#"+data.id()+"-edit").hide();
+        $("#"+data.id()+"-body").show();
+    }
+    
+    $(function () {
+        $("#comment_submit").on("click", function () {
+            $.post("{{ comment_url }}",
+                {
+                    comment_text: $("#new_comment").val()
+                },
+                function (data) {
+                    ViewModel.comments.comments([]);
+                    ViewModel.comments.init();
+                });
+        });
+        ko.applyBindings(ViewModel);
+    });
+
+</script>
+</html>
+

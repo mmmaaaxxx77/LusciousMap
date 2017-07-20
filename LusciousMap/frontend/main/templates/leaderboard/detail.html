@@ -1,0 +1,343 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+
+{% block title %} : 好食排行戰{% endblock %}
+
+{% block meta %}
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
+    <meta name="description"
+          content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
+    <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,專欄,好食專欄,小吃,餐廳,夜市,鬧區,分享,景點,排行,好食排行,美食排行,排行戰好食排行戰">
+
+    <meta property="og:image" content="http://{{ request.get_host }}{% static "frontend/img/title_black.png" %}">
+    <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
+    <meta property="og:description"
+          content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="180">
+{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/leaderboard_detail.css" %}">
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'LEADERBOARD');
+    </script>
+    {# GA end #}
+
+{% endblock %}
+
+{% block body %}
+    <div class="w3-container" style="padding:30px 16px" id="home">
+    </div>
+    <div class="w3-container" id="articles">
+        <div class="w3-row-padding" style="padding:20px 5px 10px 5px;">
+            <div class="w3-col s12" style="margin-bottom: 7px;">
+                <div class="container-4" style="margin: 0 auto">
+                    <input type="search" id="search" placeholder="搜尋排行榜美食 ..." class="ui-autocomplete-input"
+                           autocomplete="off">
+                    <button class="icon" data-bind="click: clickSearch"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+            <div class="w3-col m6">
+                <div class="w3-col s12" style="text-align: center;margin-top: 10px;">
+                    <h3 style="color: #0b5178;border-bottom: solid 1px #0b5178;">正聲量排行</h3>
+                </div>
+                <!-- ko template: {foreach: positive_list.places} -->
+                <div class="w3-col s12 pointer lb-column-outer"
+                     data-bind="click:function(){ViewModel.click_comment_btn($data)}">
+                    <div class="w3-col">
+                        <div class="w3-col s2">
+                            <h3 class="column-number" data-bind="text:rating_good_index"></h3>
+                        </div>
+                        <div class="w3-col s10 radius-ball">
+                            <div class="w3-col s12 radius-ball"
+                                 data-bind="style: { backgroundImage: 'url(\'' + place.photos()[0].image_url() + '?width=600&height=63\')' }">
+                                <div class="w3-col s12 radius-ball"
+                                     style="height:63px; background: rgba(0,0,0,0.3); color:#f4faff;">
+                                <span class="w3-col 12" data-bind="text:place.name"
+                                      style="padding-left:10px;font-size: 1.1em;line-height: 63px;"></span>
+                                </div>
+                            </div>
+                            <span class="w3-col s4 column-count" style="color: #1084c0;"><small>推薦數 <span
+                                    data-bind="text: positive_comment_count"></span></small></span>
+                            <span class="w3-col s4 column-count" style="color: #9e3635;"><small>建議數 <span
+                                    data-bind="text: negative_comment_count"></span></small></span>
+                        </div>
+                        <div class="w3-col s12"
+                             style="border-top: solid 1px #bde3f1; text-align: center;color: #616161;">
+                            [ 我要評論 ]
+                        </div>
+                    </div>
+                </div>
+                <!-- /ko -->
+                <!-- ko if: search.positive_page() < search.positive_total() -->
+                <div class="w3-col s12 lb-column-more pointer" style="text-align: center;color: #616161;"
+                     data-bind="click:positive_list.more">
+                    [ 更多 ]
+                </div>
+                <!-- /ko -->
+            </div>
+            <div class="w3-col m6">
+                <div class="w3-col s12" style="text-align: center;margin-top: 10px;">
+                    <h3 style="color: #823432;border-bottom: solid 1px #823432;">期待更好排行</h3>
+                </div>
+                <!-- ko template: {foreach: negative_list.places} -->
+                <div class="w3-col s12 pointer lb-column-outer"
+                     data-bind="click:function(){ViewModel.click_comment_btn($data)}">
+                    <div class="w3-col">
+                        <div class="w3-col s2">
+                            <h3 class="column-number" data-bind="text:rating_good_index"></h3>
+                        </div>
+                        <div class="w3-col s10">
+                            <div class="w3-col s12 radius-ball"
+                                 data-bind="style: { backgroundImage: 'url(\'' + place.photos()[0].image_url() + '?width=600&height=63\')' }">
+                                <div class="w3-col s12 radius-ball"
+                                     style="height:63px; background: rgba(0,0,0,0.3); color:#f4faff;">
+                                <span class="w3-col 12" data-bind="text:place.name"
+                                      style="padding-left:10px;font-size: 1.1em;line-height: 63px;"></span>
+                                </div>
+                            </div>
+                            <span class="w3-col s4 column-count" style="color: #1084c0;"><small>推薦數 <span
+                                    data-bind="text: positive_comment_count"></span></small></span>
+                            <span class="w3-col s4 column-count" style="color: #9e3635;"><small>建議數 <span
+                                    data-bind="text: negative_comment_count"></span></small></span>
+                        </div>
+                        <div class="w3-col s12"
+                             style="border-top: solid 1px #FB9FA1; text-align: center;color: #616161;">
+                            [ 我要評論 ]
+                        </div>
+                    </div>
+                </div>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+    <div style="padding-top: 30px;"></div>
+    {% include '_footer.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/vex/js/vex.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/vex/js/vex.combined.js" %}"></script>
+    <script>vex.defaultOptions.className = 'vex-theme-plain'</script>
+
+    <script>
+
+        $(function () {
+            // search
+            $("#search").autocomplete({
+                maxLength: 10,
+                source: function (request, response) {
+                    list_data = []
+                    lm_success = function (data, status) {
+                        data = data.places;
+                        for (var i = 0; i < data.length; i++) {
+                            d = data[i];
+                            list_data[list_data.length] = d;
+                        }
+
+                        response(list_data, status);
+                    }
+                    // lm ajax
+                    $.getJSON("{% url "leaderboard_search" topic_id=topic.id %}", {
+                        term: request.term
+                    }, lm_success);
+
+                },
+                change: function (event, ui) {
+                    ViewModel.search.term = $("#search").val();
+                },
+                focus: function (event, ui) {
+
+                    $("#search").val(ui.item.title);
+                    return false;
+                },
+                select: function (event, ui) {
+                    console.log(ui.item.name);
+                    ViewModel.search.term = ui.item.name;
+                    ViewModel.clickSearch();
+                    return false;
+                }
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<div><b>" + item.name + "</b><br><small>" + "</small></div>")
+                    .appendTo(ul);
+            };
+        });
+
+        var ViewModel = new function () {
+            self = this;
+
+            this.search = {
+                positive_page: ko.observable(1),
+                positive_total: ko.observable(0),
+                negative_page: ko.observable(1),
+                negative_total: ko.observable(0),
+                term: "",
+            }
+
+            this.positive_list = {
+                places: ko.observableArray([]),
+                init: function () {
+                    $.getJSON("{% url "leaderboard_get_positive_places" topic_id=topic.id %}?page=" + self.search.positive_page(),
+                        function (data, status) {
+                            if (status == 'success') {
+                                ViewModel.search.positive_page(data.page);
+                                ViewModel.search.positive_total(data.total);
+                                data = data.places;
+                                model = ViewModel.positive_list.places;
+                                for (i in data) {
+                                    model.push(ko.mapping.fromJS(data[i]));
+                                }
+                            }
+                        });
+                },
+                more: function () {
+                    if (ViewModel.search.positive_page() != ViewModel.search.positive_total()) {
+                        ViewModel.search.positive_page(ViewModel.search.positive_page() + 1);
+                    }
+                    $.getJSON("{% url "leaderboard_get_positive_places" topic_id=topic.id %}?page=" + ViewModel.search.positive_page(),
+                        function (data, status) {
+                            if (status == 'success') {
+                                data = data.places;
+                                model = ViewModel.positive_list.places;
+                                for (i in data) {
+                                    model.push(ko.mapping.fromJS(data[i]));
+                                }
+                            }
+                        });
+                }
+            }
+
+            self.positive_list.init();
+
+            this.negative_list = {
+                places: ko.observableArray([]),
+                init: function () {
+                    $.getJSON("{% url "leaderboard_get_negative_places" topic_id=topic.id %}?page=" + self.search.negative_page(),
+                        function (data, status) {
+                            if (status == 'success') {
+                                ViewModel.search.negative_page(data.page);
+                                ViewModel.search.negative_total(data.total);
+                                data = data.places;
+                                model = ViewModel.negative_list.places;
+                                for (i in data) {
+                                    model.push(ko.mapping.fromJS(data[i]));
+                                }
+                            }
+                        });
+                },
+                more: function () {
+                    if (ViewModel.search.negative_page() != ViewModel.search.negative_total()) {
+                        ViewModel.search.negative_page(ViewModel.search.negative_page() + 1);
+                    }
+                    $.getJSON("{% url "leaderboard_get_negative_places" topic_id=topic.id %}?page=" + ViewModel.search.negative_page(),
+                        function (data, status) {
+                            if (status == 'success') {
+                                data = data.places;
+                                model = ViewModel.negative_list.places;
+                                for (i in data) {
+                                    model.push(ko.mapping.fromJS(data[i]));
+                                }
+                            }
+                        });
+                }
+            }
+
+            self.negative_list.init();
+
+            this.click_comment_btn = function (data) {
+                vex.dialog.open({
+                    message: '',
+                    input: [
+                        '<h4 style="text-align:center;">' + data.place.name() + '</h4>',
+                        '<a target="_blank" href="' + data.place.url() + '" class="w3-button w3-block u-menu-btn">開啟地圖</a>',
+                        '<buttom class="w3-button w3-block comment-g-dialog-btn" onClick="ViewModel.open_iframe(\'' + data.positive_url() + '\', \'推薦留言\')">查看所有推薦 / 我要推薦</buttom>',
+                        '<buttom class="w3-button w3-block comment-b-dialog-btn" onClick="ViewModel.open_iframe(\'' + data.negative_url() + '\', \'建議留言\')">查看所有建議 / 我要建議</buttom>',
+                        '<div style="border-top: solid 1px #CCC;margin-bottom:5px;padding-bottom: 5px;"></div>',
+                        '<div id="comment_iframe"></div>',
+                        '',
+                    ].join(''),
+                    buttons: [
+                        $.extend({}, vex.dialog.buttons.NO, {text: '關閉'})
+                    ],
+                    afterOpen: function (data) {
+                    },
+                    callback: function (data) {
+                    }
+                })
+
+            }
+
+            this.open_iframe = function (url, title) {
+
+                {% if user.is_authenticated %}
+                    html = "<p style='text-align:center;'>" + title + "</p><div style='border-top: solid 1px #666;margin-bottom:5px;padding-bottom: 5px;'></div>";
+                    html += '<iframe id="mainframe" frameborder="0" width="100%" height="100%" src="' + url + '"></iframe>';
+                    $("#comment_iframe").html(html);
+                    resize();
+                {% else %}
+                    alert("請先登入才能查看留言喔！");
+                {% endif %}
+            }
+
+            this.clickSearch = function () {
+                //ViewModel.search.term = $("#search").val(ViewModel.search.term)
+                $("#search").val(ViewModel.search.term);
+                ViewModel.search.negative_total(0);
+                ViewModel.search.negative_page(1);
+
+                ViewModel.search.positive_total(0);
+                ViewModel.search.positive_page(1);
+
+                $.getJSON("{% url "leaderboard_get_positive_places" topic_id=topic.id %}", {
+                    term: ViewModel.search.term
+                }, function (data, status) {
+                    ViewModel.search.positive_total(data.totalPages * 1);
+                    ViewModel.search.positive_page(data.page * 1);
+
+                    list = ViewModel.positive_list.places;
+                    list([]);
+                    for (i in data.places) {
+                        list.push(ko.mapping.fromJS(data.places[i]));
+                    }
+                });
+
+                $.getJSON("{% url "leaderboard_get_negative_places" topic_id=topic.id %}", {
+                    term: ViewModel.search.term
+                }, function (data, status) {
+
+                    ViewModel.search.negative_total(data.totalPages * 1);
+                    ViewModel.search.negative_page(data.page * 1);
+
+                    list = ViewModel.negative_list.places;
+                    list([]);
+                    for (i in data.places) {
+                        list.push(ko.mapping.fromJS(data.places[i]));
+                    }
+                });
+            }
+
+        }
+
+        $(function () {
+            ko.applyBindings(ViewModel);
+        });
+
+        function resize() {
+            parent.document.getElementById("mainframe").height = document.body.scrollHeight;  //將子頁面高度傳到父頁面框架
+        }
+
+
+    </script>
+{% endblock %}

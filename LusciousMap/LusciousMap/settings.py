@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'django.contrib.humanize',
     # Luscious Map
     'frontend.map_basic',
     'frontend.map_map',
     'frontend.google_service',
     'frontend.column',
+    'frontend.leaderboard',
     'api.api',
     # all auth
     'django.contrib.sites',

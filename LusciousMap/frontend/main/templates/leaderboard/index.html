@@ -1,0 +1,93 @@
+{% extends '_default.html' %}
+{% load i18n %}
+{% load humanize %}
+{% get_current_language as LANGUAGE_CODE %}
+{% load staticfiles %}
+
+{% block title %} : 好食排行戰{% endblock %}
+
+{% block meta %}
+    <meta name="title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
+    <meta name="description"
+          content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
+    <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,專欄,好食專欄,小吃,餐廳,夜市,鬧區,分享,景點,排行,好食排行,美食排行,排行戰好食排行戰">
+
+    <meta property="og:image" content="http://{{ request.get_host }}{% static "frontend/img/title_black.png" %}">
+    <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
+    <meta property="og:description"
+          content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="180">
+{% endblock %}
+
+{% block header %}
+    <link rel="stylesheet" href="{% static "frontend/plugins/jquery-ui.min.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/plugins/bootstrap/css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "frontend/css/leaderboard_index.css" %}">
+
+    {# GA #}
+    <script>
+        ga('send', 'pageview', 'LEADERBOARD');
+    </script>
+    {# GA end #}
+
+{% endblock %}
+
+{% block body %}
+    <div class="w3-container" style="padding:40px 16px" id="home">
+    </div>
+    <div class="w3-container" id="articles">
+        {% for topic in topics %}
+            <div class="w3-row-padding" style="padding:10px 5px 10px 5px;">
+                <div class="w3-col m6">
+                    <a href="{% url "leaderboard_detail" topic_id=topic.id %}">
+                        <img class="w3-image w3-round-large"
+                             src="{% url "get_photo" image_id=topic.cover_photo.id %}?width=700&height=300"
+                             width="700" height="300">
+                    </a>
+                </div>
+                <div class="w3-col m6">
+                    <a href="{% url "leaderboard_detail" topic_id=topic.id %}"><h3>{{ topic.title }}</h3></a>
+                    <small style="color: #666;">更新日期 <span>{{ topic.updateDate|date:"Y M d D" }}</span></small>
+                    <div>
+                        {% for hot in topic.tags.all %}
+                            <div class="label">{{ hot.name }}</div>
+                        {% endfor %}
+                    </div>
+                    <br/>
+                    <div class="w3-col m12" style="margin-bottom: 10px;margin-top: 10px;">
+                        <div class="w3-col m12">
+                            <span style="font-size: 1.2em;color: #555555;">店家數：{{ topic.to_detail.total_count|intcomma }}</span>
+                        </div>
+                        <div class="w3-col m6">
+                            <span style="font-size: 1.2em;color: #0f74a8;">累積推薦聲量：{{ topic.to_detail.positive_comment_count|intcomma }}</span>
+                        </div>
+                        <div class="w3-col m6">
+                            <span style="font-size: 1.2em;color: #d9534f;">累積建議聲量：{{ topic.to_detail.negative_comment_count|intcomma }}</span>
+                        </div>
+                    </div>
+                    <div style="color: #666;">
+                        {{ topic.description }}
+                    </div>
+                    <div style="text-align: right;">
+                        <a href="{% url "leaderboard_detail" topic_id=topic.id %}">
+                            <small style="color: #666;">[ 進入排行戰 ]</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div style="border-top: solid 1px #CCC;margin-top: 10px;margin-bottom: 10px;"></div>
+    </div>
+    {% include '_footer.html' %}
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="{% static "frontend/plugins/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/bootstrap/js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "frontend/plugins/knocket-mapping.js" %}"></script>
+    <script>
+
+    </script>
+{% endblock %}

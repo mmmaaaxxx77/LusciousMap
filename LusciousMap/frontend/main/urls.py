@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.views.generic import TemplateView
 
-from frontend.main.views import views, column
+from frontend.main.views import views, column, leaderboard
 from frontend.main.views import webplugin
 
 urlpatterns = [
@@ -36,4 +36,23 @@ urlpatterns = [
     url(r'^column/$', column.index, name="column_index"),
     url(r'^column/search/$', column.search_column, name="column_search"),
     url(r'^column/detail/(?P<column_id>[\w\-]+)/$', column.detail, name="column_detail"),
+    # leaderboard
+    url(r'^leaderboard/$', leaderboard.index, name="leaderboard_index"),
+    url(r'^leaderboard/detail/(?P<topic_id>[\w\-]+)/$', leaderboard.detail, name="leaderboard_detail"),
+    url(r'^leaderboard/topic/(?P<topic_id>[\w\-]+)/$', leaderboard.get_topic, name="leaderboard_get_topic"),
+    url(r'^leaderboard/placeslist/positive/(?P<topic_id>[\w\-]+)/$', leaderboard.get_g_places,
+        name="leaderboard_get_positive_places"),
+    url(r'^leaderboard/placeslist/negative/(?P<topic_id>[\w\-]+)/$', leaderboard.get_b_places,
+        name="leaderboard_get_negative_places"),
+    url(r'^leaderboard/search/(?P<topic_id>[\w\-]+)/$', leaderboard.search_places, name="leaderboard_search"),
+    url(r'^leaderboard/save/comment/positive/(?P<place_id>[\w\-]+)/$', leaderboard.save_g_comment,
+        name="leaderboard_save_g_comment"),
+    url(r'^leaderboard/save/comment/negative/(?P<place_id>[\w\-]+)/$', leaderboard.save_b_comment,
+        name="leaderboard_save_b_comment"),
+    url(r'^leaderboard/list/comment/negative/(?P<place_id>[\w\-]+)/$', leaderboard.get_b_comments,
+        name="leaderboard_list_b_comment"),
+    url(r'^leaderboard/list/comment/positive/(?P<place_id>[\w\-]+)/$', leaderboard.get_g_comments,
+        name="leaderboard_list_g_comment"),
+    url(r'^leaderboard/save/comment/all/(?P<comment_id>[\w\-]+)/$', leaderboard.save_comment,
+        name="leaderboard_save_comment"),
 ]

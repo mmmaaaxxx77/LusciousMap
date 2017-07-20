@@ -23,7 +23,7 @@
     {% endblock %}
     <meta property="og:site_name" content="好食地圖 - Luscious Map">
     <meta property="og:type" content="website">
-    <meta property="fb:app_id" content="428836787473926" />
+    <meta property="fb:app_id" content="428836787473926"/>
     <meta content='10203461385092508' property='fb:admins'/>
 
     {% include '_css.html' %}
@@ -69,12 +69,14 @@
                 <a href="{% url "index" %}#map" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-map-o"></i>
                     &nbsp好食地圖</a>
-            {% comment %}
+                {% comment %}
                 <a href="#teach" class="w3-bar-item w3-button header-height header-button"><i class="fa fa-book"></i>
                     &nbsp地圖教學</a>
             {% endcomment %}
                 <a href="{% url "column_index" %}" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
+                <a href="{% url "leaderboard_index" %}" class="w3-bar-item w3-button header-height header-button"><i
+                        class="fa fa-bullhorn"></i> &nbsp好食排行戰</a>
                 {% comment %}
                 <a href="#pricing" class="w3-bar-item w3-button header-height header-button"><i
                         class="fa fa-sign-language"></i> &nbsp好食直播</a>
@@ -122,7 +124,10 @@
     <a href="{% url "index" %}#teach" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-book"></i>
         &nbsp地圖教學</a>
     {% endcomment %}
-    <a href="{% url "column_index" %}" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
+    <a href="{% url "column_index" %}" onclick="w3_close()" class="w3-bar-item w3-button"><i
+            class="fa fa-hand-peace-o"></i> &nbsp好食專欄</a>
+    <a href="{% url "leaderboard_index" %}" onclick="w3_close()" class="w3-bar-item w3-button"><i
+            class="fa fa-bullhorn"></i> &nbsp好食排行戰</a>
     {% comment %}
     <a href="#work" onclick="w3_close()" class="w3-bar-item w3-button"><i class="fa fa-sign-language"></i> &nbsp好食直播</a>
     {% endcomment %}
