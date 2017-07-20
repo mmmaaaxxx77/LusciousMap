@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.forms import ModelMultipleChoiceField, ModelForm
 
 from frontend.leaderboard.models import LBComment, LBPlace, LBTopic
+from frontend.map_basic.models import LMPlace
 
 
 class LBPlaceAdmin(admin.ModelAdmin):
@@ -13,7 +16,17 @@ class LBPlaceAdmin(admin.ModelAdmin):
         return obj.place.name
 
 
+class LBTopicAdminForm(ModelForm):
+    places = ModelMultipleChoiceField(queryset=LBPlace.objects.all(),
+                                    widget=FilteredSelectMultiple("name", is_stacked=False))
+    class Meta:
+        model = LBTopic
+        fields = '__all__'
+
+
 class LBTopicAdmin(admin.ModelAdmin):
+    form = LBTopicAdminForm
+
     list_display = ('title', )
     search_fields = ('id', 'title', 'description')
     list_filter = ('display', ('createDate', DateFieldListFilter), ('updateDate', DateFieldListFilter))

@@ -14,6 +14,11 @@ def index(request):
 
 def detail(request, topic_id):
     topic = LBTopic.objects.get(id__exact=topic_id)
+
+    if (topic.updateDate + datetime.timedelta(hours=1)) < datetime.datetime.now(datetime.timezone.utc):
+        topic.updateDate = topic.updateDate + datetime.timedelta(hours=1)
+        topic.save()
+
     return render(request, "leaderboard/detail.html", dict(topic=topic))
 
 

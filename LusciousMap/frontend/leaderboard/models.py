@@ -1,5 +1,5 @@
 import uuid
-from datetime import timezone
+from datetime import timezone, timedelta
 
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
@@ -152,7 +152,8 @@ class LBTopic(models.Model):
                     description=self.description,
                     total_count=total_count,
                     positive_comment_count=positive_comment_count,
-                    negative_comment_count=negative_comment_count)
+                    negative_comment_count=negative_comment_count,
+                    next_updatedate=self.updateDate + timedelta(hours=1))
 
     def __str__(self):
        return self.title
