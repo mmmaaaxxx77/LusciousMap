@@ -10,13 +10,13 @@
           content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
     <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,專欄,好食專欄,小吃,餐廳,夜市,鬧區,分享,景點,排行,好食排行,美食排行,排行戰好食排行戰">
 
-    <meta property="og:image" content="http://{{ request.get_host }}{% static "frontend/img/title_black.png" %}">
+    <meta property="og:image" content="http://{{ request.get_host }}{% url "get_photo" image_id=topic.cover_photo.id %}">
     <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
     <meta property="og:description"
           content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image:width" content="600">
-    <meta property="og:image:height" content="180">
+    <meta property="og:image:width" content="{{ column.cover_photo.image.width }}">
+    <meta property="og:image:height" content="{{ column.cover_photo.image.height }}">
 {% endblock %}
 
 {% block header %}
