@@ -50,7 +50,7 @@ def save_lbplace(request):
 
     except Exception as e:
         print("{}".format(e))
-        return HttpResponseForbidden()
+        return HttpResponse("{}".format(e))
 
 
 
