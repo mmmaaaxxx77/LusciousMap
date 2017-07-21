@@ -62,7 +62,7 @@ def get_g_places(request, topic_id):
         detail = t.to_detail()
         if detail['place']['photos'] is None or len(detail['place']['photos']) == 0:
             detail['place']['photos'] = [t.place.map_image.as_json()]
-        result_places.append(t.to_detail())
+        result_places.append(detail)
 
     return JsonResponse(dict(
         places=result_places,
@@ -105,7 +105,7 @@ def get_b_places(request, topic_id):
         detail = t.to_detail()
         if detail['place']['photos'] is None or len(detail['place']['photos']) == 0:
             detail['place']['photos'] = [t.place.map_image.as_json()]
-        result_places.append(t.to_detail())
+        result_places.append(detail)
 
     return JsonResponse(dict(
         places=result_places,
