@@ -42,8 +42,8 @@ def get_g_places(request, topic_id):
         total_page_size += 1
 
     start = (page - 1) * size
-    if start > total_page_size:
-        start = total_page_size
+    if page > total_page_size:
+        start = total_page_size*size
     end = start + size
 
     if "term" in request.GET.keys():
@@ -85,8 +85,8 @@ def get_b_places(request, topic_id):
         total_page_size += 1
 
     start = (page - 1) * size
-    if start > total_page_size:
-        start = total_page_size
+    if page > total_page_size:
+        start = total_page_size*size
     end = start + size
 
     if "term" in request.GET.keys():
