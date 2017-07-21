@@ -91,7 +91,7 @@ def get_b_places(request, topic_id):
     else:
         places = places_obj
 
-    places = places.order_by("-rating_bad_score").all()[start:end]
+    places = places.order_by("-rating_good_score").all()[start:end]
 
     return JsonResponse(dict(
         places=[t.to_detail() for t in places],

@@ -10,9 +10,41 @@ from django.views.decorators.csrf import csrf_exempt
 
 from LusciousMap import settings
 from frontend.google_service.views import service_key_getter
+from frontend.leaderboard.models import LBPlace
 from frontend.map_basic.models import LMPlaceType, LMCountry, LMPlace, LMRating, LMPhoto, LMTag
 
 API_KEY = ["ABCDEFG"]
+
+
+@csrf_exempt
+def new_lbplace(request):
+    if request.method == 'POST':
+        if request.POST['token'] in API_KEY:
+            return save_lbplace(request)
+        return HttpResponseForbidden()
+
+
+def save_lbplace(request):
+    try:
+        places = LBPlace.objects.filter(place__id__exact=request.POST['place_id'])
+        if len(places) > 0:
+            place = places[0]
+            place.rating_good_score = request.POST['rating_good_score']
+            place.save()
+            HttpResponse("edit ok")
+        else:
+            place_id = request.POST['place_id']
+            rating_good_score = request.POST['rating_good_score']
+            rating_bad_score = 0
+            lmplace = LMPlace.objects.get(id__exact=place_id)
+            lbplace = LBPlace()
+            lbplace.place = lmplace
+            lbplace.rating_good_score = rating_good_score
+            lbplace.save()
+            HttpResponse("ok")
+    except:
+        return HttpResponseForbidden()
+
 
 
 @csrf_exempt

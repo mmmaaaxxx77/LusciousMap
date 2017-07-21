@@ -18,4 +18,5 @@ from api.api import views
 
 urlpatterns = [
     url(r'^save/place/$', views.new_place, name="api_save_place"),
+    url(r'^save/lbplace/$', views.new_lbplace, name="api_save_lbplace"),
 ]
