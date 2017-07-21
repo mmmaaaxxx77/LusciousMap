@@ -219,7 +219,7 @@
                     <div class="widget-area no-padding blank">
                         <div class="status-upload">
                             <form method="post" action="" data-bind="attr:{action:save_url}">
-                                <textarea name="comment_text" placeholder="請輸入訊息..." data-bind="text:comment"></textarea>
+                                <textarea maxlength="5" name="comment_text" placeholder="請輸入訊息..." data-bind="text:comment"></textarea>
                                 <button class="btn btn-default btn-sm" data-bind="click:function(){hideEditer($data);}">取消</button>
                                 <button type="submit" class="btn btn-default btn-sm">儲存</button>
                             </form>
