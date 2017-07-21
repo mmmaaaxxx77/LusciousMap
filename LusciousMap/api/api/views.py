@@ -26,7 +26,7 @@ def new_lbplace(request):
 
 def save_lbplace(request):
     try:
-        places = LBPlace.objects.filter(place__id__exact=request.POST['place_id'])
+        places = LBPlace.objects.filter(place__google_place_id__exact=request.POST['place_id'])
         if len(places) > 0:
             place = places[0]
             place.rating_good_score = request.POST['rating_good_score']
@@ -36,7 +36,7 @@ def save_lbplace(request):
             place_id = request.POST['place_id']
             rating_good_score = request.POST['rating_good_score']
             rating_bad_score = 0
-            lmplace = LMPlace.objects.get(id__exact=place_id)
+            lmplace = LMPlace.objects.get(google_place_id__exact=place_id)
             lbplace = LBPlace()
             lbplace.place = lmplace
             lbplace.rating_good_score = rating_good_score
@@ -48,7 +48,8 @@ def save_lbplace(request):
 
             return HttpResponse("ok")
 
-    except:
+    except Exception as e:
+        print("{}".format(e))
         return HttpResponseForbidden()
 
 
