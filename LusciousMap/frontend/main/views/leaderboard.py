@@ -57,8 +57,15 @@ def get_g_places(request, topic_id):
 
     places = places.order_by("-rating_good_score").all()[start:end]
 
+    result_places = []
+    for t in places:
+        detail = t.to_detail()
+        if detail['place']['photos'] is None or len(detail['place']['photos']) == 0:
+            detail['place']['photos'] = [t.place.map_image.as_json()]
+        result_places.append(t.to_detail())
+
     return JsonResponse(dict(
-        places=[t.to_detail() for t in places],
+        places=result_places,
         page=page,
         total=total_page_size,
     ))
@@ -93,8 +100,15 @@ def get_b_places(request, topic_id):
 
     places = places.order_by("rating_good_score").all()[start:end]
 
+    result_places = []
+    for t in places:
+        detail = t.to_detail()
+        if detail['place']['photos'] is None or len(detail['place']['photos']) == 0:
+            detail['place']['photos'] = [t.place.map_image.as_json()]
+        result_places.append(t.to_detail())
+
     return JsonResponse(dict(
-        places=[t.to_detail() for t in places],
+        places=result_places,
         page=page,
         total=total_page_size,
     ))
