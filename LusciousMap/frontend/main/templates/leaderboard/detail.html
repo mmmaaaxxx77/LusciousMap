@@ -10,7 +10,8 @@
           content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
     <meta name="keywords" content="好食地圖,美食地圖,美食,地圖,專欄,好食專欄,小吃,餐廳,夜市,鬧區,分享,景點,排行,好食排行,美食排行,排行戰好食排行戰">
 
-    <meta property="og:image" content="http://{{ request.get_host }}{% url "get_photo" image_id=topic.cover_photo.id %}">
+    <meta property="og:image"
+          content="http://{{ request.get_host }}{% url "get_photo" image_id=topic.cover_photo.id %}">
     <meta property="og:title" content="好食地圖 Luscious Map - 搜尋美食、分享美食都在好食地圖 | 好食排行戰">
     <meta property="og:description"
           content="你的、我的必吃美食！每個人心中都有他的私房美食，每個人心中都有他的那張地圖。你覺得好食排行上的美食不是你心目中的推薦美食？來戰一下吧！讓美食可以被看見，不用心的店家可以被發現！">
@@ -48,6 +49,8 @@
                 <span style="color: #d9534f;">累積建議聲量： {{ topic.to_detail.negative_comment_count }}</span>
                 <br>
                 <span style="color:#666;">下次排行更新時間： {{ topic.to_detail.next_updatedate | date:"Y年m月d日 H時i分" }}</span>
+                <br>
+                <span style="color:#999;">若查詢不到您的店家, 可以在下面的留言板跟我們說喔！</span>
             </small>
         </h3>
     </div>
@@ -133,6 +136,22 @@
                 <!-- /ko -->
             </div>
         </div>
+    </div>
+    <div class="w3-container">
+        <!-- facebook command -->
+        <div id="fb-root"></div>
+        <script>
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.9&appId=428836787473926";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));</script>
+        <div class="fb-comments" data-href="{{ request.build_absolute_uri }}"
+             data-width="100%" data-numposts="5" data-colorscheme="light"></div>
+        <!-- facebook command end -->
     </div>
     <div style="padding-top: 30px;"></div>
     {% include '_footer.html' %}
