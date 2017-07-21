@@ -31,6 +31,11 @@ def save_lbplace(request):
             place = places[0]
             place.rating_good_score = request.POST['rating_good_score']
             place.save()
+
+            topic = LBTopic.objects.get(id__exact=request.POST['topic_id'])
+            if place not in topic.places.all():
+                topic.places.add(place)
+                topic.save()
             return HttpResponse("edit ok")
         else:
             place_id = request.POST['place_id']
@@ -42,7 +47,7 @@ def save_lbplace(request):
             lbplace.rating_good_score = rating_good_score
             lbplace.save()
 
-            topic = LBTopic.objects.get(request.POST['topic_id'])
+            topic = LBTopic.objects.get(id__exact=request.POST['topic_id'])
             topic.places.add(lbplace)
             topic.save()
 
